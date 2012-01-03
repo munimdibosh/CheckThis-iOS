@@ -41,9 +41,9 @@
         UILabel *aLabel=[[UILabel alloc]initWithFrame:CGRectMake(offsetX,offsetY+buttonHeight+gap, buttonWidth, labelHeight)];
         aLabel.backgroundColor =[UIColor clearColor];
         //aLabel.textColor=[[UIColor alloc] initWithRed:(102/255.f) green:(63/255.f) blue:(7/255.f) alpha:1.0];
-        aLabel.textColor=[UIColor whiteColor];
+        aLabel.textColor=[UIColor blackColor];
         //dividing by 255 converts it as 0.0 to 1.0
-        aLabel.font=[UIFont systemFontOfSize:12.0];
+        aLabel.font=[UIFont systemFontOfSize:14.0];
         aLabel.textAlignment=UITextAlignmentCenter;
         aLabel.adjustsFontSizeToFitWidth=YES;
         
@@ -51,7 +51,7 @@
         if(![[availableLists objectAtIndex:array_offset]isEqualToString:@"Unavailable"])
         {
             aButton.backgroundColor=[[UIColor alloc]initWithPatternImage:[UIImage imageNamed:@"list_icon.png"]];
-            [aButton addTarget:self action:@selector(buttonImageToggle:) forControlEvents:UIControlEventTouchUpInside];//define the state change image function
+           //[aButton addTarget:self action:@selector(buttonImageToggle:) forControlEvents:UIControlEventTouchUpInside];//define the state change image function
             aLabel.text= [availableLists objectAtIndex:array_offset];
         }
         else
@@ -125,10 +125,17 @@
     //
     [UIView beginAnimations:nil context:NULL];
     [UIView setAnimationDuration:durationInSecond];
+    [UIView setAnimationDelegate:self];
+    [UIView setAnimationDidStopSelector:@selector(animationDidStop:finished:context:)];
     
     logoImage.alpha = 0.0f;
     
     [UIView commitAnimations];
+}
+
+- (void)animationDidStop:(NSString*)animationID finished:(BOOL)finished context:(void *)context 
+{
+	[self createListPaneWithPages:3];
 }
 
 - (void)viewDidLoad
@@ -149,12 +156,9 @@
     @catch (NSException *exception) {
         NSLog(exception.reason);
     }
-    [self createListPaneWithPages:3];
-    //
-    gridView.hidden=NO;
+    
     gridView.delegate=self;
     //
-    pageControl.hidden=NO;
     pageControlBeingUsed=NO;
      
     

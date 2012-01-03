@@ -40,7 +40,6 @@
 		FC05D3F71497F1F200F4DD04 /* checkBox.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = checkBox.png; sourceTree = "<group>"; };
 		FC1C750C147AD29900AEC6AC /* bg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bg.png; sourceTree = "<group>"; };
 		FC20A755148FF91B005AE8AD /* create_button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = create_button.png; sourceTree = "<group>"; };
-		FC20A756148FF91B005AE8AD /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
 		FC20A757148FF91B005AE8AD /* list_icon_empty.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = list_icon_empty.png; sourceTree = "<group>"; };
 		FC20A758148FF91B005AE8AD /* list_icon_tapped.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = list_icon_tapped.png; sourceTree = "<group>"; };
 		FC20A759148FF91B005AE8AD /* list_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = list_icon.png; sourceTree = "<group>"; };
@@ -128,7 +127,6 @@
 				FCA8BDF514929F52004649FC /* button.png */,
 				FCA8BDF214929D0E004649FC /* info.png */,
 				FC20A755148FF91B005AE8AD /* create_button.png */,
-				FC20A756148FF91B005AE8AD /* Default.png */,
 				FC20A757148FF91B005AE8AD /* list_icon_empty.png */,
 				FC20A758148FF91B005AE8AD /* list_icon_tapped.png */,
 				FC20A759148FF91B005AE8AD /* list_icon.png */,
