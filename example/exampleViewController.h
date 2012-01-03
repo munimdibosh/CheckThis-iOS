@@ -8,12 +8,12 @@
 
 #import <UIKit/UIKit.h>
 
+#import <QuartzCore/QuartzCore.h>
+#import "ChecklistViewController.h"
+
 @interface exampleViewController : UIViewController<UIScrollViewDelegate>
 {
-    //
-    //View controllers
-    //
-    IBOutlet UIViewController *checkListView;
+    IBOutlet ChecklistViewController *checkListView;
     //
     //View Items
     //
@@ -21,6 +21,7 @@
     IBOutlet UIImageView *logoImage;
     IBOutlet UIScrollView *gridView;
     IBOutlet UIPageControl *pageControl;
+    IBOutlet UIView *containerView;
     //
     //Vars
     //
@@ -31,12 +32,15 @@
     BOOL pageControlBeingUsed;
     
 }
+@property (strong,nonatomic)ChecklistViewController *checkListView;
+@property(strong,nonatomic) IBOutlet UIView *containerView;
 @property(strong,nonatomic) IBOutlet UIImageView *logoImage;
 @property (strong, nonatomic) IBOutlet UIButton *createButton;
 @property(strong,nonatomic) IBOutlet UIScrollView *gridView;
 @property(strong,nonatomic)IBOutlet UIPageControl *pageControl;
 ////////////Action Methods////////////
 /////////////////////////////////////
+-(IBAction)loadListView:(id)sender;
 -(IBAction)buttonImageToggle:(id)sender;
 -(IBAction)changePage;
 ////////////Methods//////////////////

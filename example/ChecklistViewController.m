@@ -64,10 +64,10 @@
     // Release any cached data, images, etc that aren't in use.
 }
 
-- (IBAction)alertButtonTapped:(id)sender {
-    [self newLocalScore];
-}
 
+
+//this is a method to create an example alert view
+/*
 -(void)newLocalScore {
 	UIAlertView* dialog = [[UIAlertView alloc] init];
 	[dialog setDelegate:self];
@@ -85,7 +85,7 @@
         //do stuff
     }
 }
-
+*/
 #pragma mark - View lifecycle
 -(void)viewWillAppear:(BOOL)animated
 {

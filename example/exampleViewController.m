@@ -9,18 +9,19 @@
 #import "exampleViewController.h"
 
 @implementation exampleViewController
-
+@synthesize checkListView;
 @synthesize createButton;
 @synthesize gridView;
 @synthesize pageControl;
 @synthesize logoImage;
+@synthesize containerView;
 
 -(UIView *)createListGridWithRows:(int)rows AndCollumns:(int)cols OnView:(UIView *)view
 {
     float gridWidth=view.bounds.size.width;
     float gridHeight=view.bounds.size.height;
-    float buttonWidth=80.0;
-    float buttonHeight=77.0;
+    float buttonWidth=60.0;
+    float buttonHeight=56.0;
     float horizontalGap=(gridWidth-(buttonWidth*cols))/(cols+1);
     float verticalGap=(gridHeight-(buttonHeight*rows))/(rows+1);
     float offsetX;
@@ -40,10 +41,8 @@
         //define the label under the button
         UILabel *aLabel=[[UILabel alloc]initWithFrame:CGRectMake(offsetX,offsetY+buttonHeight+gap, buttonWidth, labelHeight)];
         aLabel.backgroundColor =[UIColor clearColor];
-        //aLabel.textColor=[[UIColor alloc] initWithRed:(102/255.f) green:(63/255.f) blue:(7/255.f) alpha:1.0];
-        aLabel.textColor=[UIColor blackColor];
-        //dividing by 255 converts it as 0.0 to 1.0
-        aLabel.font=[UIFont systemFontOfSize:14.0];
+        aLabel.textColor=[[UIColor alloc] initWithRed:(160/255.f) green:(108/255.f) blue:(55/255.f) alpha:1.0];//dividing by 255 converts it as 0.0 to 1.0
+        aLabel.font=[UIFont systemFontOfSize:12.0];
         aLabel.textAlignment=UITextAlignmentCenter;
         aLabel.adjustsFontSizeToFitWidth=YES;
         
@@ -52,6 +51,7 @@
         {
             aButton.backgroundColor=[[UIColor alloc]initWithPatternImage:[UIImage imageNamed:@"list_icon.png"]];
            //[aButton addTarget:self action:@selector(buttonImageToggle:) forControlEvents:UIControlEventTouchUpInside];//define the state change image function
+            [aButton addTarget:self action:@selector(loadListView:) forControlEvents:UIControlEventTouchUpInside];
             aLabel.text= [availableLists objectAtIndex:array_offset];
         }
         else
@@ -86,9 +86,12 @@
     }
     gridView.contentSize = CGSizeMake(gridView.frame.size.width * pages,gridView.frame.size.height);
 }
-
-
-
+//this method loads the actual check list
+-(IBAction)loadListView:(id)sender
+{
+    [self performSegueWithIdentifier:@"checkListView" sender:sender];
+}
+//this method toggles the image on selected/normal button
 -(IBAction)buttonImageToggle:(id)sender
 {
     if([sender isSelected])
@@ -144,6 +147,10 @@
     //fades the logo out
     [self fadeOutLogo:5.0];
     //
+    containerView.layer.shadowColor=[UIColor blackColor].CGColor;
+    containerView.layer.shadowOpacity=1.0;
+    containerView.layer.shadowRadius=5.0;
+    containerView.layer.shadowOffset=CGSizeMake(0,4); 
     
     //
     array_offset=0;
@@ -202,13 +209,16 @@
 }
 
 
+
+
 - (void)viewDidUnload
 {
     [self setCreateButton:nil];    
     gridView = nil;
     pageControl = nil;
-    checkListView = nil;
     logoImage = nil;
+    containerView = nil;
+    checkListView = nil;
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;

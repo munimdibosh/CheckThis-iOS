@@ -10,7 +10,7 @@
 #import <QuartzCore/QuartzCore.h>
 #import "CheckList.h"
 #import "TestCase.h"
-@interface ChecklistViewController : UIViewController<UITableViewDelegate,UITableViewDataSource,UIAlertViewDelegate>
+@interface ChecklistViewController : UIViewController<UITableViewDelegate,UITableViewDataSource>
 {
     IBOutlet UILabel *listNameLabel;
     IBOutlet UILabel *moduleNameLabel;
@@ -25,7 +25,6 @@
     //
     IBOutlet UITableView *TableView;   
 }
-- (IBAction)alertButtonTapped:(id)sender;
 -(void)newLocalScore;
 @property(strong,nonatomic) NSArray *tasks;
 @property(strong,nonatomic) Module *module;
