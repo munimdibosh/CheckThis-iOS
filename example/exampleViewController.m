@@ -23,7 +23,7 @@
     float buttonWidth=60.0;
     float buttonHeight=56.0;
     float horizontalGap=(gridWidth-(buttonWidth*cols))/(cols+1);
-    float verticalGap=(gridHeight-(buttonHeight*rows))/(rows+1);
+    float verticalGap=(gridHeight-(buttonHeight* rows))/(rows+1);
     float offsetX;
     float offsetY=view.bounds.size.height-gridHeight;
     //the gap between label & button & height of label
@@ -118,13 +118,9 @@
 
 
 - (void)fadeOutLogo:(float)durationInSecond {
-    //programmatically set image for view(no need at this moment)
-    //update:used image view to show background
-
-    /*
-     UIColor *bgImg=[[UIColor alloc]initWithPatternImage:[UIImage imageNamed:@"bg.png"]];
-     self.view.backgroundColor=bgImg;
-     */
+    //programmatically set image for the paper view    
+     UIColor *bgImg=[[UIColor alloc]initWithPatternImage:[UIImage imageNamed:@"paper.png"]];
+     self.containerView.backgroundColor=bgImg;
     //
     [UIView beginAnimations:nil context:NULL];
     [UIView setAnimationDuration:durationInSecond];
@@ -138,20 +134,22 @@
 
 - (void)animationDidStop:(NSString*)animationID finished:(BOOL)finished context:(void *)context 
 {
+    pageControl.hidden=NO;
 	[self createListPaneWithPages:3];
 }
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    //fades the logo out
-    [self fadeOutLogo:5.0];
-    //
+    //at first the page control should be invisible
+    pageControl.hidden=YES;
+    //set shadow of the page
     containerView.layer.shadowColor=[UIColor blackColor].CGColor;
     containerView.layer.shadowOpacity=1.0;
     containerView.layer.shadowRadius=5.0;
     containerView.layer.shadowOffset=CGSizeMake(0,4); 
-    
+    //fades the logo out
+    [self fadeOutLogo:5.0];
     //
     array_offset=0;
     //unit test
@@ -161,15 +159,13 @@
                 availableListNumber=1;
     }
     @catch (NSException *exception) {
-        NSLog(exception.reason);
+        NSLog(@"Error in view did load method");
     }
     
     gridView.delegate=self;
     //
     pageControlBeingUsed=NO;
-     
     
-	// Do any additional setup after loading the view, typically from a nib.
 }
 
 

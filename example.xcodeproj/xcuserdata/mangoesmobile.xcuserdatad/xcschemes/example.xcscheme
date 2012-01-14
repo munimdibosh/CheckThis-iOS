@@ -14,7 +14,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "FCD0BAF51469B1B000CF4733"
-               BuildableName = "example.app"
+               BuildableName = "checkThis.app"
                BlueprintName = "example"
                ReferencedContainer = "container:example.xcodeproj">
             </BuildableReference>
@@ -41,7 +41,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "FCD0BAF51469B1B000CF4733"
-            BuildableName = "example.app"
+            BuildableName = "checkThis.app"
             BlueprintName = "example"
             ReferencedContainer = "container:example.xcodeproj">
          </BuildableReference>
@@ -59,7 +59,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "FCD0BAF51469B1B000CF4733"
-            BuildableName = "example.app"
+            BuildableName = "checkThis.app"
             BlueprintName = "example"
             ReferencedContainer = "container:example.xcodeproj">
          </BuildableReference>
@@ -70,6 +70,7 @@
    </AnalyzeAction>
    <ArchiveAction
       buildConfiguration = "Release"
+      customArchiveName = "checkThis"
       revealArchiveInOrganizer = "YES">
    </ArchiveAction>
 </Scheme>

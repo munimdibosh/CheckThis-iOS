@@ -37,16 +37,16 @@
     cell.textLabel.text=temp.name;
     cell.textLabel.adjustsFontSizeToFitWidth=NO;
     cell.textLabel.numberOfLines=2;
-    [cell.textLabel setFont:[UIFont systemFontOfSize:14]];
+    [cell.textLabel setFont:[UIFont fontWithName:@"Marion" size:15]];
     //
     if([temp hasSubtasks])
-        cell.detailTextLabel.text=@"It has subtasks";
+        cell.detailTextLabel.text=@"Subtasks has to be completed.";
     else
-        cell.detailTextLabel.text=@"It has options";
+        cell.detailTextLabel.text=@"Option has to be selected.";
 
     cell.detailTextLabel.adjustsFontSizeToFitWidth=NO;
     cell.detailTextLabel.numberOfLines=1;
-    [cell.detailTextLabel setFont:[UIFont italicSystemFontOfSize:12]];
+    [cell.detailTextLabel setFont:[UIFont fontWithName:@"Marion" size:12]];
     [cell.imageView setImage:[UIImage imageNamed:@"checkBox.png"]];
     //optional
     //cell.accessoryType=UITableViewCellAccessoryDetailDisclosureButton;
@@ -107,6 +107,9 @@
     listPageView.layer.shadowOpacity=1.0;
     listPageView.layer.shadowRadius=5.0;
     listPageView.layer.shadowOffset=CGSizeMake(0,4); 
+    //set paper look for listPageView
+    UIColor *bgImg=[[UIColor alloc]initWithPatternImage:[UIImage imageNamed:@"paper.png"]];
+    self.listPageView.backgroundColor=bgImg;
     //set the table view delegate and source to self
     TableView.delegate=self;
     TableView.dataSource=self;

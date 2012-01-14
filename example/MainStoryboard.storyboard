@@ -28,12 +28,12 @@
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                     </scrollView>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="logo_1.png" id="22">
-                                        <rect key="frame" x="0.0" y="115" width="296" height="155"/>
+                                        <rect key="frame" x="0.0" y="115" width="296" height="137"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                     </imageView>
                                 </subviews>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                                <color key="backgroundColor" red="0.88627450980392153" green="0.82745098039215681" blue="0.64313725490196072" alpha="1" colorSpace="calibratedRGB"/>
                             </view>
                             <pageControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" numberOfPages="3" id="19">
                                 <rect key="frame" x="141" y="434" width="38" height="36"/>
@@ -44,7 +44,7 @@
                                 </connections>
                             </pageControl>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="header.png" id="53">
-                                <rect key="frame" x="102" y="0.0" width="117" height="46"/>
+                                <rect key="frame" x="102" y="0.0" width="117" height="50"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
                         </subviews>
@@ -60,7 +60,7 @@
                     </connections>
                 </viewController>
             </objects>
-            <point key="canvasLocation" x="-69" y="-19"/>
+            <point key="canvasLocation" x="-323" y="-37"/>
         </scene>
         <scene sceneID="28">
             <objects>
@@ -82,30 +82,30 @@
                                         <rect key="frame" x="12" y="36" width="296" height="409"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <subviews>
-                                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Surgical Checklist" lineBreakMode="tailTruncation" minimumFontSize="10" id="39">
-                                                <rect key="frame" x="0.0" y="0.0" width="296" height="30"/>
+                                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Surgical Checklist" textAlignment="center" lineBreakMode="tailTruncation" minimumFontSize="10" id="39">
+                                                <rect key="frame" x="0.0" y="0.0" width="296" height="40"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <color key="backgroundColor" red="0.0" green="0.55686274509803924" blue="0.30588235294117649" alpha="1" colorSpace="calibratedRGB"/>
-                                                <fontDescription key="fontDescription" name="Helvetica-Bold" family="Helvetica" pointSize="14"/>
+                                                <fontDescription key="fontDescription" name="Marion-Bold" family="Marion" pointSize="15"/>
                                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" id="40">
+                                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="who_logo.png" id="40">
                                                 <rect key="frame" x="246" y="0.0" width="50" height="30"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             </imageView>
-                                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Before induction of anaesthesia" lineBreakMode="tailTruncation" minimumFontSize="10" id="41">
+                                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Before induction of anaesthesia" textAlignment="center" lineBreakMode="tailTruncation" minimumFontSize="10" id="41">
                                                 <rect key="frame" x="0.0" y="29" width="296" height="18"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <color key="backgroundColor" red="0.47450980392156861" green="0.47843137254901957" blue="0.4823529411764706" alpha="1" colorSpace="calibratedRGB"/>
-                                                <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                                <fontDescription key="fontDescription" name="Marion-Regular" family="Marion" pointSize="13"/>
                                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="46">
                                                 <rect key="frame" x="0.0" y="48" width="296" height="361"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                 <connections>
                                                     <outlet property="dataSource" destination="25" id="49"/>
                                                     <outlet property="delegate" destination="25" id="50"/>
@@ -115,7 +115,7 @@
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                                     </view>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="header.png" id="31">
-                                        <rect key="frame" x="102" y="0.0" width="117" height="46"/>
+                                        <rect key="frame" x="102" y="0.0" width="117" height="50"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     </imageView>
                                 </subviews>
@@ -133,13 +133,14 @@
                     </connections>
                 </viewController>
             </objects>
-            <point key="canvasLocation" x="329" y="-46"/>
+            <point key="canvasLocation" x="64" y="-37"/>
         </scene>
     </scenes>
     <resources>
         <image name="bg.png" width="320" height="480"/>
         <image name="header.png" width="112" height="51"/>
         <image name="logo_1.png" width="480" height="200"/>
+        <image name="who_logo.png" width="50" height="30"/>
     </resources>
     <classes>
         <class className="ChecklistViewController" superclassName="UIViewController">
