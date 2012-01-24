@@ -17,12 +17,16 @@
     list.ID=@"Unavailable";//At first set that the list is not available
     if([ListName isEqualToString:@"Surgical"])
     {
+        /*
+         THESE ARE THE CODES MAKING THE APP FROZEN.REMOVE COMMENTING AND CHECK YOURSELF.
+         YOU WILL SEE IT TAKES LONG TIME TO LOAD THE LIST WITH TASKS AFTER CLICKING THE LIST FROM MENU.
     
         setDataInChecklist *dt = [[setDataInChecklist alloc] init];
         NSMutableArray *modules=[dt getModule:@""];
         for (id module in modules){
             NSLog(@"module: %@",module);
         }
+         */
     list.ID=@"1";
     list.name=@"Surgical Checklist";
     //Create a module
