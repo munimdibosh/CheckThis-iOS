@@ -14,7 +14,6 @@
 
 @interface TestCase : NSObject
 {
-    
 }
-+(CheckList*)getTestList;
++(CheckList*)getTestList:(NSString*)listName;
 @end

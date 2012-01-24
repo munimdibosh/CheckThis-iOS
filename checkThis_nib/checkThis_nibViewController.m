@@ -12,10 +12,13 @@
 
 @synthesize overlayView;
 @synthesize createButton;
+@synthesize homeButton;
+@synthesize helpButton;
+@synthesize startButton;
 @synthesize logoImage;
 @synthesize containerView;
-@synthesize TableView;
 @synthesize listView;
+@synthesize TableView;
 
 /*
  MENU STYLE: LIST
@@ -52,6 +55,8 @@
     cell.textLabel.numberOfLines=2;
     [cell.textLabel setFont:[UIFont fontWithName:@"Marker Felt" size:20]];
     [cell.imageView setImage:[UIImage imageNamed:@"checkBox.png"]];
+    /*
+     COMMENTING OUT THE BUTTON FUNCTIONALITY ON ANY TABLE VIEW CELL.
     //
     UIButton *aButton = [UIButton buttonWithType:UIButtonTypeCustom];
     aButton.backgroundColor=[UIColor clearColor];
@@ -73,8 +78,10 @@
         aButton.enabled=YES;
     }
     cell.accessoryView = aButton;
+     
     //optional
     //cell.accessoryType=UITableViewCellAccessoryDetailDisclosureButton;
+     */
     return cell;
 }
 
@@ -84,7 +91,18 @@
     return [self createTableCellForListMenu:tableView indexPath:indexPath];
     
 }
-
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    //THE PROCEED BUTTON ON SOME LIST HAS BEEN TAPPED.
+    //THE ACTUAL LIST IS ABOUT TO BE SHOWN.
+    int row=indexPath.row;
+    DataHolder.listName=[availableLists objectAtIndex:row];
+    
+    NSLog(@"Inside method tap for cell.Before load.");
+    
+    [self loadActualListView];
+    
+}
 /*
  LOGO ANIMATION AT START
  
@@ -110,10 +128,13 @@
     {
         TableView.hidden= NO;
         createButton.hidden=NO;
+        homeButton.hidden=NO;
+        homeButton.enabled=NO;
+        helpButton.hidden=NO;
     }
     if(animationType==2)
     {
-        [containerView removeFromSuperview];
+        
 
     }
 }
@@ -134,6 +155,24 @@
 
     
 }
+-(void)insertView:(UIView*)newView AfterPullingOutView:(UIView*)oldView WithDelay:(float)durationInSecond
+{
+    [UIView beginAnimations:nil context:NULL];
+    [UIView setAnimationDuration:durationInSecond];
+    [UIView setAnimationDelegate:self];
+    [UIView setAnimationDidStopSelector:@selector(animationDidStop:finished:context:)];
+    
+    float y=oldView.center.y;
+    CGPoint oldViewCenter=oldView.center;
+    oldView.center=CGPointMake(600,y);
+    newView.center=oldViewCenter;
+    
+    [UIView commitAnimations];
+    
+    
+}
+
+
 
 
 - (void)didReceiveMemoryWarning
@@ -166,20 +205,24 @@
     
     
     //setting delegate and data source for table view
+    
     TableView.delegate=self;
     TableView.dataSource=self;
-    //
-    //at first the page control should be invisible
+    
+    //SET ALL THE BUTTONS TO BE HIDDEN AT FIRST.
+    
     TableView.hidden=YES;
     createButton.hidden=YES;
     homeButton.hidden=YES;
-    homeButton.tag=3;
+    startButton.hidden=YES;
+    helpButton.hidden=YES;
+    
+    //SET THE PAPER LOOK
+    
     [self setThePaperLookForView:self.containerView]; 
-    //
-    //
-    array_offset=0;
-    //unit test
-    //NSLog(@"HERE");
+    
+    //CREATING THE STATIC ARRAY OF AVAILABLE LISTS.
+    
     @try {
         availableLists=[[NSMutableArray alloc] initWithArray:[NSArray arrayWithObjects:@"Surgical",@"Unavailable",@"Unavailable",@"Unavailable",@"Unavailable",nil]];
         
@@ -189,28 +232,35 @@
     }
 }
 
+//THIS METHOD MAKES THE ACTUAL LIST VIEW FROM NIB AND SAVES THAT IN LISTVIEW OBJECT.
+- (void)createListView {
+    ListView *newView = [[ListView alloc] initWithFrame:CGRectMake(containerView.frame.origin.x+340,containerView.frame.origin.y,containerView.frame.size.width,containerView.frame.size.height)];
+    [self setThePaperLookForView:newView];
+
+    [self.view insertSubview: newView aboveSubview: containerView];
+    
+    self.listView = newView;
+    
+    NSLog(@"Inside creating list view.After creation.");
+
+}
+
 /*
  LOADS THE ACTUAL CHECK LIST ON BOARD WHEN THAT LIST IS CLICKED FROM
  AVAILABLE LIST MENU.
  */
 
 - (void)loadActualListView {
+
+    if(homeButton.enabled==NO)homeButton.enabled=YES;
+    if(startButton.hidden==YES)startButton.hidden=NO;
     
-    NSArray *xibviews = [[NSBundle mainBundle] loadNibNamed: @"ListView" owner:listView options: NULL];
-    ListView *newView = [xibviews objectAtIndex: 0];
-    newView.frame = CGRectMake(containerView.frame.origin.x+340,containerView.frame.origin.y,containerView.frame.size.width,containerView.frame.size.height);
-    [self setThePaperLookForView:newView];
-    [self.view insertSubview: newView aboveSubview: containerView];
-    self.listView = newView;
-    //
-    homeButton.hidden=NO;
+    //CREATE THE LIST VIEW WITH PROPER LIST
+    
+    [self createListView];
     //
     animationType=2;
-    [self insertView:newView AfterKickingOutView:containerView WithDelay:0.3];
-    /*
-     INITIATE THE DATA FOR THE LIST.
-     */
-    
+    [self insertView:listView AfterKickingOutView:containerView WithDelay:0.3];
 }
 /*
  CREATES A CUSTOM PAPER FEEL ALERT VIEW.
@@ -228,14 +278,15 @@
     overlayView=[[UIView alloc]initWithFrame:screenSize];
     overlayView.backgroundColor=[[UIColor alloc] initWithRed:(255.0/255.0) green:(255.0/255.0) blue:(255.0/255.0) alpha:0.35];
     [self.view addSubview:overlayView];
-    UIAlertView *alert=[[UIAlertView alloc] initWithFrame:CGRectMake( width-300,height-340,280,200)];
+    UIView *alert=[[UIAlertView alloc] initWithFrame:CGRectMake( width-300,height-340,280,200)];
     [self setThePaperLookForView:alert];
     //
-    UILabel *messageLabel=[[UILabel alloc] initWithFrame:CGRectMake(20,30,240,120)];
+    UILabel *messageLabel=[[UILabel alloc] initWithFrame:CGRectMake(20,20,240,130)];
     messageLabel.text=msg;
     messageLabel.backgroundColor=[UIColor clearColor];
     messageLabel.numberOfLines=5;
     messageLabel.font=markerFont;
+    messageLabel.adjustsFontSizeToFitWidth=YES;
     //
     UIButton *okButton=[UIButton buttonWithType:UIButtonTypeCustom];
     okButton.titleLabel.textColor=[[UIColor alloc] initWithRed:(220/255.0) green:(203/255.0) blue:(154/255.0) alpha:1.0];
@@ -243,16 +294,12 @@
     okButton.frame=CGRectMake(95, 162,90, 29);
     [okButton setBackgroundImage:[UIImage imageNamed:@"alert_button_bg.png"] forState:UIControlStateNormal];
     [okButton setTitle:@"Ok,Thanks!" forState:UIControlStateNormal];
-    [okButton setTag:2];
+    [okButton setTag:OVERLAY_BUTTON_TAG];
     [okButton addTarget:self action: @selector(buttonTapped:)forControlEvents:UIControlEventTouchUpInside];
     [alert addSubview:messageLabel];
     [alert addSubview:okButton];
-    
     [overlayView addSubview:alert];
 }
-
-
-
 
 /*
  ACTION GROUND.THIS PLACE IS WHERE ALL ACTION METHODS ARE PLACED.
@@ -265,35 +312,56 @@
 -(IBAction)buttonTapped:(id)sender
 {
     NSInteger tag=[sender tag];
-    if(tag==2)
+    if(tag==OVERLAY_BUTTON_TAG)
     {
         //THE DISMISS BUTTON FOR ALERT VIEW HAS BEEN PRESSED.
         [overlayView removeFromSuperview];
     }
-    else if(tag==3)
+    else if(tag==HOME_BUTTON_TAG)
     {
+        //HOME BUTTON GOT PRESSED
+        [self insertView:containerView AfterPullingOutView:listView WithDelay:0.3];
+        if(homeButton.enabled==YES)homeButton.enabled=NO;
+        if(startButton.hidden==NO)startButton.hidden=YES;
         
     }
-    else
+    else if(tag==CREATE_BUTTON_TAG)
+    {
+        //CREATE BUTTON HAS BEEN PRESSED
+        NSString *msg=@"This feature is currently under development.You will be notified when an upgrade is available.";
+        [self makeAlertFromMessage:msg];
+    }
+    else if(tag==START_BUTTON_TAG)
+    {
+        //THE PLAY BUTTON GOT PRESSED.
+        [listView startInteraction];
+    }
+    else if(tag==HELP_BUTTON_TAG)
     {
         
-        //THE PROCEED BUTTON ON SOME LIST HAS BEEN TAPPED.
-        //THE ACTUAL LIST IS ABOUT TO BE SHOWN.
-        [self loadActualListView];
+        NSString *msg=@"This is pretty simple at this moment.Just tap a list,when you see the list,tap 'play button' to start completing the tasks in the list.";
+        [self makeAlertFromMessage:msg];
         
 
     }
 }
-- (IBAction)showAlert:(id)sender{
-    NSString *msg=@"This feature is currently under development.You will be notified when an upgrade is available.";
-    [self makeAlertFromMessage:msg];
+
+- (void)setTagForVisibleButtons {
+    //
+    homeButton.tag=HOME_BUTTON_TAG;
+    createButton.tag=CREATE_BUTTON_TAG;
+    startButton.tag=START_BUTTON_TAG;
+    helpButton.tag=HELP_BUTTON_TAG;
 }
+
 
 #pragma mark - View lifecycle
+
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    [self setTagForVisibleButtons];
     /*
      KEEP THE MENU LIST BUT DONT LOAD ANY SPECIFIC LIST.
      */
@@ -315,6 +383,8 @@
     logoImage=nil;
     listView=nil;
     homeButton = nil;
+    helpButton = nil;
+    [self setListView:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
@@ -343,7 +413,7 @@
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     // Return YES for supported orientations
-    return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
+    return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
 

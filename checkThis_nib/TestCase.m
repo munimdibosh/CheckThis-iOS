@@ -7,12 +7,22 @@
 //
 
 #import "TestCase.h"
+#import "setDataInChecklist.h"
 
 @implementation TestCase
 
-+(CheckList*)getTestList
++(CheckList*)getTestList:(NSString*)ListName
 {
     CheckList *list=[[CheckList alloc]init];
+    list.ID=@"Unavailable";//At first set that the list is not available
+    if([ListName isEqualToString:@"Surgical"])
+    {
+    
+        setDataInChecklist *dt = [[setDataInChecklist alloc] init];
+        NSMutableArray *modules=[dt getModule:@""];
+        for (id module in modules){
+            NSLog(@"module: %@",module);
+        }
     list.ID=@"1";
     list.name=@"Surgical Checklist";
     //Create a module
@@ -64,7 +74,9 @@
     list.modules=[NSArray arrayWithObjects:m1, nil];
 
     
+    }
     return list;
+
     
         
 }

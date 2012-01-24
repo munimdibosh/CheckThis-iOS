@@ -9,7 +9,8 @@
 #import <UIKit/UIKit.h>
 #import <QuartzCore/QuartzCore.h>
 #import "ListView.h"
-
+#import "DataHolder.h"
+#import "Constants.h"
 
 @interface checkThis_nibViewController : UIViewController<UITableViewDelegate,UITableViewDataSource>
 {
@@ -18,34 +19,34 @@
     //
     IBOutlet UIButton *createButton;
     IBOutlet UIButton *homeButton;
+    IBOutlet UIButton *helpButton;
+    IBOutlet UIButton *startButton;
     IBOutlet UIImageView *logoImage;
     IBOutlet UIView *containerView;
     IBOutlet UITableView *TableView;
-    IBOutlet ListView *listView;
+    ListView *listView;
     //
     //Vars
     //
     NSMutableArray *availableLists;
-    int array_offset;
-    NSMutableArray *addedListButtons;
-    int availableListNumber; 
     int animationType;
     
     
 }
 @property(strong,nonatomic) UIView *overlayView;
-@property(strong,nonatomic) IBOutlet UIView *containerView;
-@property(strong,nonatomic) IBOutlet UIImageView *logoImage;
-@property (strong, nonatomic) IBOutlet UIButton *createButton;
+@property(strong,nonatomic)IBOutlet UIButton *createButton;
+@property(strong,nonatomic)IBOutlet UIButton *homeButton;
+@property(strong,nonatomic)IBOutlet UIButton *helpButton;
+@property(strong,nonatomic)IBOutlet UIButton *startButton;
+@property(strong,nonatomic)IBOutlet UIImageView *logoImage;
+@property(strong,nonatomic)IBOutlet UIView *containerView;
 @property(strong,nonatomic)IBOutlet UITableView *TableView;
-@property(strong,nonatomic)IBOutlet ListView *listView;
-
+@property(strong,nonatomic)ListView *listView;
 
 ////////////Methods//////////////////
 ////////////////////////////////////
-- (IBAction)showAlert:(id)sender;
 - (IBAction)buttonTapped:(id)sender;
-
+-(void)loadActualListView;
 -(void)initAvailableLists:(NSArray*)array;
 -(void)makeAlertFromMessage:(NSString*)msg;
  @end

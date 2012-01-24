@@ -13,14 +13,24 @@
 @synthesize listNameLabel;
 @synthesize moduleNameLabel;
 @synthesize taskTable;
+@synthesize listName;
 
 - (id)initWithFrame:(CGRect)frame
 {
-    self = [super initWithFrame:frame];
-    if (self) {
-        // Initialization code
-    }
-    return self;
+        
+        NSArray *arrayOfViews = [[NSBundle mainBundle] loadNibNamed:@"ListView"
+                                                              owner:nil
+                                                            options:nil];
+        
+        if ([arrayOfViews count] < 1){
+                        return nil;
+        }
+        
+        ListView *newView = [arrayOfViews objectAtIndex:0];
+        [newView setFrame:frame];
+        self = newView;
+        
+        return self;
 }
 
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -73,7 +83,17 @@
     return cell;
 }
 
+-(int)startInteraction
+{
+    [[[UIAlertView alloc] initWithTitle:@"Not implemented!" message:@"This feature is under development" delegate:self cancelButtonTitle:@"Get lost!" otherButtonTitles:nil, nil] show];
+        return LIST_COMPLETED_SUCCESSFULLY;
+}
 
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
+    if (buttonIndex == 1) {
+        // YES CLICKED
+    }
+}
 
 /*
 // Only override drawRect: if you perform custom drawing.
@@ -85,7 +105,8 @@
 */
 -(void)awakeFromNib
 {
-    list=[TestCase getTestList];
+    listName=DataHolder.listName;
+    list=[TestCase getTestList:listName];
     module=[list.modules objectAtIndex:0];
     tasks=module.tasks;
     taskTable.dataSource=self;
