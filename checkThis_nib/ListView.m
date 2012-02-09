@@ -8,12 +8,23 @@
 
 #import "ListView.h"
 
-@implementation ListView
-
+@implementation ListView;
 @synthesize listNameLabel;
 @synthesize moduleNameLabel;
 @synthesize taskTable;
 @synthesize listName;
+/*
+ MANUAL DEFINITION OF THE DELEGATE
+ */
+- (id <CallImagePickerDelegate>)delegate
+{
+    return delegate;
+}
+//Declare the setDelegate method
+- (void)setDelegate:(id <CallImagePickerDelegate>)v
+{
+    delegate = v;
+}
 
 - (id)initWithFrame:(CGRect)frame
 {
@@ -31,6 +42,23 @@
         self = newView;
         
         return self;
+}
+/*
+ TABLE VIEW SPECIFIC METHODS.
+ */
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath;
+{
+    Task *temp=[tasks objectAtIndex:[indexPath row]];
+    NSString *text =temp.name;
+    
+    CGSize constraint = CGSizeMake(CELL_CONTENT_WIDTH -CELL_IMAGE_WIDTH, 20000.0f);
+    
+    CGSize size = [text sizeWithFont:[UIFont systemFontOfSize:FONT_SIZE_16] constrainedToSize:constraint lineBreakMode:UILineBreakModeWordWrap];
+    
+    CGFloat height = MAX(size.height, 44.0f);
+    
+    return height + (CELL_CONTENT_MARGIN * 2);
 }
 
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -50,9 +78,7 @@
     
     
 }
-
-
-- (UITableViewCell*)createTableCellForActualList:(UITableView *)tableView indexPath:(NSIndexPath *)indexPath {
+-(UITableViewCell* )createTableCellForActualList:(UITableView *)tableView indexPath:(NSIndexPath *)indexPath {
     
     static NSString *cellIdentifier=@"Cell";
     UITableViewCell *cell=[tableView dequeueReusableCellWithIdentifier:cellIdentifier];
@@ -66,33 +92,89 @@
     Task *temp=[tasks objectAtIndex:indexPath.row];
     cell.textLabel.text=temp.name;
     cell.textLabel.adjustsFontSizeToFitWidth=NO;
-    cell.textLabel.numberOfLines=2;
-    [cell.textLabel setFont:[UIFont fontWithName:@"Marker Felt" size:15]];
-    //
-    if([temp hasSubtasks])
-        cell.detailTextLabel.text=@"Subtasks has to be completed.";
-    else
-        cell.detailTextLabel.text=@"Option has to be selected.";
-    
+    cell.textLabel.numberOfLines=0;
+    [cell.textLabel setFont:[UIFont fontWithName:@"Marker Felt" size:FONT_SIZE_16]];
+        
     cell.detailTextLabel.adjustsFontSizeToFitWidth=NO;
-    cell.detailTextLabel.numberOfLines=1;
-    [cell.detailTextLabel setFont:[UIFont fontWithName:@"Marker Felt" size:12]];
-    [cell.imageView setImage:[UIImage imageNamed:@"checkBox.png"]];
+    cell.detailTextLabel.numberOfLines=0;
+    [cell.detailTextLabel setFont:[UIFont fontWithName:@"Marker Felt" size:FONT_SIZE_IN_LIST]];
+    
+    if(shouldUpdateCell)
+    {
+        [cell.imageView setImage:[UIImage imageNamed:@"checkBox_checked.png"]];
+
+        if(![temp hasSubtasks] && ![selectedOption isEqualToString:SUBTASK_IDENTIFIER])
+        {
+            cell.detailTextLabel.text=[NSString stringWithFormat:@"Selected:%@",selectedOption];
+        }
+        else
+        {
+            UIButton *detailsButton=[UIButton buttonWithType:UIButtonTypeCustom];
+            detailsButton.titleLabel.textColor=[[UIColor alloc] initWithRed:(220/255.0) green:(203/255.0) blue:(154/255.0) alpha:1.0];
+            detailsButton.frame=CGRectMake(0, 0,48,48);
+            detailsButton.titleLabel.font=[UIFont fontWithName:@"Marker Felt" size:FONT_SIZE_18];
+            [detailsButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+            [detailsButton setTitle:@">>" forState:UIControlStateNormal];
+            [detailsButton addTarget:self action: @selector(detailsViewPressed:)forControlEvents:UIControlEventTouchUpInside];
+            cell.accessoryView=detailsButton;
+            cell.detailTextLabel.text=@"Tap arrow to see details.";
+
+            
+        }
+    }
+    else
+    {
+        [cell.imageView setImage:[UIImage imageNamed:@"checkBox.png"]];
+        if([temp hasSubtasks])
+            cell.detailTextLabel.text=@"Subtasks has to be completed.";
+        else
+            cell.detailTextLabel.text=@"Option has to be selected.";
+
+
+    }
     //optional
     //cell.accessoryType=UITableViewCellAccessoryDetailDisclosureButton;
     return cell;
 }
 
--(int)startInteraction
+//THIS UPDATES THE TABLE VIEW BASED ON USER INTERACTIONS.
+-(void)updateCell:(int)n WithStatus:(NSString*)status WithOption:(NSString*)option
 {
-    [[[UIAlertView alloc] initWithTitle:@"Not implemented!" message:@"This feature is under development" delegate:self cancelButtonTitle:@"Get lost!" otherButtonTitles:nil, nil] show];
-        return LIST_COMPLETED_SUCCESSFULLY;
+    NSIndexPath *index=[NSIndexPath indexPathForRow:n inSection:0];
+    if([status isEqualToString:TASK_COMPLETED])
+    {
+        shouldUpdateCell=YES;
+        selectedOption=option;
+        [self.taskTable reloadRowsAtIndexPaths:[NSArray arrayWithObject:index] withRowAnimation:UITableViewRowAnimationNone];
+        selectedOption=@"";
+        shouldUpdateCell=NO;
+    }
 }
 
-- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
-    if (buttonIndex == 1) {
-        // YES CLICKED
-    }
+
+//CREATES A TEXTFIELD ON UIALERTVIEW
+
+- (UITextField*)createTextField:(CGRect)frame {
+    UITextField *emailField = [[UITextField alloc] initWithFrame:frame];
+    
+    emailField.borderStyle = UITextBorderStyleBezel;
+    emailField.textColor = [UIColor blackColor];
+    emailField.textAlignment = UITextAlignmentCenter;
+    emailField.font = [UIFont systemFontOfSize:14.0];
+    emailField.placeholder = @"<enter email>";
+    
+    emailField.backgroundColor = [UIColor whiteColor];
+    emailField.autocorrectionType = UITextAutocorrectionTypeNo;	// no auto correction support
+    
+    emailField.keyboardType = UIKeyboardTypeEmailAddress;	// use the default type input method (entire keyboard)
+    emailField.returnKeyType = UIReturnKeyDone;
+    emailField.clearButtonMode = UITextFieldViewModeWhileEditing;
+    return emailField;
+}
+#pragma mark-details view action
+-(IBAction)detailsViewPressed:(id)sender
+{
+    NSLog(@"Details button pressed on cell");
 }
 
 /*
@@ -105,13 +187,16 @@
 */
 -(void)awakeFromNib
 {
+    /* 
+     DATA LOADING.
+     */
     listName=DataHolder.listName;
     list=[TestCase getTestList:listName];
     module=[list.modules objectAtIndex:0];
     tasks=module.tasks;
     taskTable.dataSource=self;
     taskTable.delegate=self;
-
-    
+    shouldUpdateCell=NO;
+            
 }
 @end

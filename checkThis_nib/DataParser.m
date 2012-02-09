@@ -6,20 +6,30 @@
 //  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
 //
 
-#import "setDataInChecklist.h"
 #import "SBJson.h"
+#import "DataParser.h"
 
-@implementation setDataInChecklist
+
+@implementation DataParser
+
+- (id)init
+{
+    self = [super init];
+    if (self) {
+        // Initialization code here.
+        parser=[[SBJsonParser alloc] init];
+        
+    }
+    
+    return self;
+}
+
+
 
  
--(NSMutableArray *)getChecklists{ 
-    SBJsonParser *p=[[SBJsonParser alloc] init];
+-(NSMutableArray *)getChecklists:(NSData*)webResponse{ 
     
-    NSURL *cheklistURL= [NSURL URLWithString:@"http://192.168.1.112:8888/Checkthis/index.php/mainControler/getChecklists"];
-    NSMutableURLRequest *req = [[NSMutableURLRequest alloc] init];
-    [req setURL:cheklistURL];
-    NSData *chicklistData =[NSURLConnection sendSynchronousRequest:req returningResponse:nil error:nil];
-    NSMutableArray *checklists = [p objectWithData:chicklistData];
+    NSMutableArray *checklists = [parser objectWithData:webResponse];
     NSMutableArray * checklistsArray = [[NSMutableArray alloc] init];
     for(id checklist in checklists){
         NSLog(@"Checklist: %@",checklist);
@@ -29,14 +39,12 @@
     return checklistsArray;
 }
 
--(NSMutableArray *)getModule:(NSString *)checklist{
-    parser=[[SBJsonParser alloc] init];
+-(NSMutableArray *)getModulesOf:(NSString *)checklist{
     //ASIHTTPRequest *r;
-    NSURL *url= [NSURL URLWithString:@"http://192.168.1.112:8888/Checkthis/index.php/mainControler/getfullchecklist"];
+    NSURL *url= [NSURL URLWithString:SERVER_URL];
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
     [request setURL:url];
     response = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
-    //NSDictionary *tasks=[parser objectWithData:response];
     NSMutableArray *modules = [parser objectWithData:response];
     NSMutableArray *moduleArray =[[NSMutableArray alloc] init];
     for (NSString *module in modules){
@@ -48,7 +56,7 @@
     
 }
 
--(NSString *)getPreReqsite:(NSString *)module{
+-(NSString *)getPreReqsOf:(NSString *)module{
     NSDictionary *data=[parser objectWithData:response];
     
     NSDictionary *dataforTask = [data objectForKey:module];
@@ -60,7 +68,7 @@
     return preReq;
 }
 
-- (NSMutableArray *)getTask:(NSString*)module{
+- (NSMutableArray *)getTasksOf:(NSString*)module{
     NSDictionary *data=[parser objectWithData:response];
     
     NSDictionary *dataforTask = [data objectForKey:module];
