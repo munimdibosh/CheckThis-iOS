@@ -30,10 +30,11 @@
 @property (nonatomic, assign) id <ViewEnhancerDelegate> delegate;
 
 -(void)setThePaperLookForView:(UIView*)view;
--(UIView*)makeAlertFromMessage:(NSString*) msg;
+-(UIView*)makeAlertFromMessage:(NSString*) msg WithButtonTitle:(NSString*)ttl;
+-(UIView*)makeAlertWithTitle:(NSString*) ttl AndMessage:(NSString*)msg WithButtonTitle:(NSString*)ttl2;
+
 -(UIView*)makeTaskViewWithTitle:(NSString*)title ForTask:(Task*)task WithSerial:(int)serial;
 -(UIView*)makeSubTaskViewWithTitle:(NSString*)title OfTask:(NSString*)taskname WithSerial:(int)serial ForSubTask:(SubTask*)subtask;
--(void)freeAlertView;
 -(IBAction)optionGotTapped:(id)sender;
 -(IBAction)buttonOnAlertGotTapped:(id)sender;
 @end

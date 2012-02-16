@@ -15,7 +15,7 @@
 #import "Constants.h"
 #import "TestCase.h"
 
-@interface checkThis_nibViewController : UIViewController<UITableViewDelegate,UITableViewDataSource,UIImagePickerControllerDelegate,UINavigationControllerDelegate, CallImagePickerDelegate,ViewEnhancerDelegate>
+@interface checkThis_nibViewController : UIViewController<UITableViewDelegate,UITableViewDataSource,UIImagePickerControllerDelegate,UINavigationControllerDelegate, CallImagePickerDelegate,ViewEnhancerDelegate,ListViewDelegate>
 {
     //THIS CLASS IS RESPONSIBLE FOR DIFFERENT TYPES OF UI DESIGNS.
     ViewEnhancer *viewEnhancer;
@@ -63,11 +63,10 @@
 @property(strong,nonatomic)IBOutlet UITableView *TableView;
 @property(strong,nonatomic)ListView *listView;
 @property(strong,nonatomic)NSMutableArray *popUpQueue;
-
-
 ////////////Methods//////////////////
 ////////////////////////////////////
 -(void)showAlert:(NSString*)msg;
+-(void)showAlertWithTitle:(NSString*)ttl AndMessage:(NSString*)msg;
 -(void)dismissAlert;
 -(void)showImagePicker;
 -(void)initAlertOverlay;

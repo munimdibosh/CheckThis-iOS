@@ -29,6 +29,17 @@
 #define SUBTASK_VIEW 4567
 #define TASK_VIEW 4577
 #define SUBTASK_IDENTIFIER @"subtask"
+/*
+ THE FOLLOWING KEYS ARE USED TO SAVE AND RETRIEVE DATA USING NSCoding
+ */
+#define KEY_ID @"id"
+#define KEY_NAME @"name"
+#define KEY_OPTIONS @"options"
+#define KEY_RESPONSES @"response" 
+#define KEY_MODULES @"module"
+#define KEY_PREREQS @"pre_reqs"
+#define KEY_TASKS @"tasks"
+#define KEY_SUBTASKS @"subtasks"
 
 @interface Constants : NSObject
 

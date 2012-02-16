@@ -41,6 +41,7 @@
 		FC97927C14CE047B001A72BF /* start_button.png in Resources */ = {isa = PBXBuildFile; fileRef = FC97927A14CE047B001A72BF /* start_button.png */; };
 		FC9F303114D0A84600949850 /* checkBox_unavailable.png in Resources */ = {isa = PBXBuildFile; fileRef = FC9F303014D0A84600949850 /* checkBox_unavailable.png */; };
 		FC9F304214D0ACD200949850 /* proAlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = FC9F304114D0ACD200949850 /* proAlertView.m */; };
+		FCD5697014E581120076D87E /* CustomAccessoryButton.m in Sources */ = {isa = PBXBuildFile; fileRef = FCD5696F14E581120076D87E /* CustomAccessoryButton.m */; };
 		FCDEE3F314CD85B60087FEC5 /* alert_button_bg.png in Resources */ = {isa = PBXBuildFile; fileRef = FCDEE3E514CD85B60087FEC5 /* alert_button_bg.png */; };
 		FCDEE3F414CD85B60087FEC5 /* bg.png in Resources */ = {isa = PBXBuildFile; fileRef = FCDEE3E614CD85B60087FEC5 /* bg.png */; };
 		FCDEE3F514CD85B60087FEC5 /* checkBox_checked.png in Resources */ = {isa = PBXBuildFile; fileRef = FCDEE3E714CD85B60087FEC5 /* checkBox_checked.png */; };
@@ -60,7 +61,6 @@
 		FCE2897414CD5BFA008DA1E4 /* SubTask.m in Sources */ = {isa = PBXBuildFile; fileRef = FCE2896D14CD5BFA008DA1E4 /* SubTask.m */; };
 		FCE2897514CD5BFA008DA1E4 /* Task.m in Sources */ = {isa = PBXBuildFile; fileRef = FCE2896F14CD5BFA008DA1E4 /* Task.m */; };
 		FCE2897614CD5BFA008DA1E4 /* TestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = FCE2897114CD5BFA008DA1E4 /* TestCase.m */; };
-		FCE72D5414D959C300A54097 /* TaskResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = FCE72D5314D959C300A54097 /* TaskResponse.m */; };
 		FCE9034814D13D4C00E69159 /* JSONData.m in Sources */ = {isa = PBXBuildFile; fileRef = FCE9034714D13D4C00E69159 /* JSONData.m */; };
 /* End PBXBuildFile section */
 
@@ -123,6 +123,8 @@
 		FC9F303014D0A84600949850 /* checkBox_unavailable.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = checkBox_unavailable.png; path = res/checkBox_unavailable.png; sourceTree = "<group>"; };
 		FC9F304014D0ACD200949850 /* proAlertView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = proAlertView.h; sourceTree = "<group>"; };
 		FC9F304114D0ACD200949850 /* proAlertView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = proAlertView.m; sourceTree = "<group>"; };
+		FCD5696E14E581120076D87E /* CustomAccessoryButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomAccessoryButton.h; sourceTree = "<group>"; };
+		FCD5696F14E581120076D87E /* CustomAccessoryButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomAccessoryButton.m; sourceTree = "<group>"; };
 		FCDEE3E514CD85B60087FEC5 /* alert_button_bg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = alert_button_bg.png; path = res/alert_button_bg.png; sourceTree = "<group>"; };
 		FCDEE3E614CD85B60087FEC5 /* bg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = bg.png; path = res/bg.png; sourceTree = "<group>"; };
 		FCDEE3E714CD85B60087FEC5 /* checkBox_checked.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = checkBox_checked.png; path = res/checkBox_checked.png; sourceTree = "<group>"; };
@@ -147,8 +149,6 @@
 		FCE2896F14CD5BFA008DA1E4 /* Task.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Task.m; sourceTree = "<group>"; };
 		FCE2897014CD5BFA008DA1E4 /* TestCase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestCase.h; sourceTree = "<group>"; };
 		FCE2897114CD5BFA008DA1E4 /* TestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestCase.m; sourceTree = "<group>"; };
-		FCE72D5214D959C200A54097 /* TaskResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaskResponse.h; sourceTree = "<group>"; };
-		FCE72D5314D959C300A54097 /* TaskResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaskResponse.m; sourceTree = "<group>"; };
 		FCE9034614D13D4C00E69159 /* JSONData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONData.h; sourceTree = "<group>"; };
 		FCE9034714D13D4C00E69159 /* JSONData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JSONData.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -197,21 +197,17 @@
 		FC3DC74B14C9DD390075B716 /* checkThis_nib */ = {
 			isa = PBXGroup;
 			children = (
-				FCD7EFC914E433CA00704536 /* views */,
 				FCD7EFC814E433AD00704536 /* parser_unit */,
 				FCD7EFC614E4338000704536 /* data_objects */,
 				FC77699F14CE9C4700417511 /* JSON */,
 				FC3DC76214C9DE630075B716 /* res */,
-				FC9F304014D0ACD200949850 /* proAlertView.h */,
-				FC9F304114D0ACD200949850 /* proAlertView.m */,
+				FCD7EFC914E433CA00704536 /* views */,
+				FC3DC74C14C9DD3A0075B716 /* Supporting Files */,
 				FC3DC75414C9DD3A0075B716 /* checkThis_nibAppDelegate.h */,
 				FC3DC75514C9DD3A0075B716 /* checkThis_nibAppDelegate.m */,
 				FC3DC75714C9DD3A0075B716 /* checkThis_nibViewController.h */,
 				FC3DC75814C9DD3A0075B716 /* checkThis_nibViewController.m */,
 				FC3DC75A14C9DD3A0075B716 /* checkThis_nibViewController.xib */,
-				FC97927614CDFDC5001A72BF /* Constants.h */,
-				FC97927714CDFDC5001A72BF /* Constants.m */,
-				FC3DC74C14C9DD3A0075B716 /* Supporting Files */,
 			);
 			path = checkThis_nib;
 			sourceTree = "<group>";
@@ -293,8 +289,6 @@
 			children = (
 				FC97927214CDF42A001A72BF /* DataHolder.h */,
 				FC97927314CDF42A001A72BF /* DataHolder.m */,
-				FCE72D5214D959C200A54097 /* TaskResponse.h */,
-				FCE72D5314D959C300A54097 /* TaskResponse.m */,
 				FCE2896814CD5BFA008DA1E4 /* CheckList.h */,
 				FCE2896914CD5BFA008DA1E4 /* CheckList.m */,
 				FCE2896A14CD5BFA008DA1E4 /* Module.h */,
@@ -305,6 +299,8 @@
 				FCE2896F14CD5BFA008DA1E4 /* Task.m */,
 				FCE2897014CD5BFA008DA1E4 /* TestCase.h */,
 				FCE2897114CD5BFA008DA1E4 /* TestCase.m */,
+				FC97927614CDFDC5001A72BF /* Constants.h */,
+				FC97927714CDFDC5001A72BF /* Constants.m */,
 			);
 			name = data_objects;
 			sourceTree = "<group>";
@@ -323,11 +319,15 @@
 		FCD7EFC914E433CA00704536 /* views */ = {
 			isa = PBXGroup;
 			children = (
+				FC9F304014D0ACD200949850 /* proAlertView.h */,
+				FC9F304114D0ACD200949850 /* proAlertView.m */,
 				FC7761A214CC7FB1008F3F2F /* ListView.h */,
 				FC7761A314CC7FB1008F3F2F /* ListView.m */,
 				FC7761A714CC80E7008F3F2F /* ListView.xib */,
 				FC86775514D573A4001A549B /* ViewEnhancer.h */,
 				FC86775614D573A4001A549B /* ViewEnhancer.m */,
+				FCD5696E14E581120076D87E /* CustomAccessoryButton.h */,
+				FCD5696F14E581120076D87E /* CustomAccessoryButton.m */,
 			);
 			name = views;
 			sourceTree = "<group>";
@@ -443,7 +443,7 @@
 				FC9F304214D0ACD200949850 /* proAlertView.m in Sources */,
 				FCE9034814D13D4C00E69159 /* JSONData.m in Sources */,
 				FC86775714D573A4001A549B /* ViewEnhancer.m in Sources */,
-				FCE72D5414D959C300A54097 /* TaskResponse.m in Sources */,
+				FCD5697014E581120076D87E /* CustomAccessoryButton.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

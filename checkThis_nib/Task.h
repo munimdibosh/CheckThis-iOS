@@ -14,11 +14,15 @@
     NSString *name;
     NSArray *options;
     NSArray *subtasks;
+    NSArray *responses;
+
 }
 @property (strong,nonatomic)NSString* ID;
 @property(strong,nonatomic) NSString *name;
 @property(strong,nonatomic) NSArray *options;
 @property(strong,nonatomic) NSArray *subtasks;
+@property(strong,nonatomic) NSArray *responses;
+
 -(BOOL)hasSubtasks;
 
 

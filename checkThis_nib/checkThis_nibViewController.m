@@ -90,17 +90,17 @@
     
 }
 
-#pragma mark-ImagePicker methods
+#pragma mark-ImagePicker methods(BASE IMAGE PICKER)
 
 /*
- DELEGATE METHODS FOR IMAGE PICKER.
+ DELEGATE METHODS FOR BASE IMAGE PICKER.
  */
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingImage:(UIImage *)img editingInfo:(NSDictionary *)editInfo {
     
     [[picker parentViewController] dismissModalViewControllerAnimated:YES];
 }
 
-#pragma mark CallImagePickerDelegate methods
+#pragma mark CallImagePickerDelegate methods(CALLED FROM LISTVIEW AS THAT'S CALL THE IMAGE PICKER)
 
 - (void)captureImage:(id)sender {
     NSLog(@"Here");
@@ -115,16 +115,23 @@
 -(void)optionSelected:(NSString *)option ForTask:(int)taskSerial WithSuperView:(UIView *)view
 {
     Task *temp=[module.tasks objectAtIndex:taskSerial];
+    NSMutableArray *array=[[NSMutableArray alloc] init];
     if(![temp hasSubtasks])
     {
-        [listView updateCell:taskSerial WithStatus:TASK_COMPLETED WithOption:option];
+        [array addObject:option];
+        [listView updateCell:taskSerial WithStatus:TASK_COMPLETED WithOption:array];
+        [array removeAllObjects];
     }
     else
     {
+        [array addObject:option];
         subtaskCounter++;
         //IF ALL THE SUBTASKS ARE OK THEN INFORM IT.
         if(subtaskCounter==[temp.subtasks count])
-            [listView updateCell:taskSerial WithStatus:TASK_COMPLETED WithOption:SUBTASK_IDENTIFIER];
+        {
+            [listView updateCell:taskSerial WithStatus:TASK_COMPLETED WithOption:array];
+            [array removeAllObjects];
+        }
 
     }
     //
@@ -132,13 +139,29 @@
     {
         if([popUpQueue count]!=0)[popUpQueue removeAllObjects];
         //POP OVER OVERLAY SHOULD BE REMOVED.
-        UIView *confirmationAlert=[viewEnhancer makeAlertFromMessage:@"Congratulations!This module is completed.You can start the next one when that gets uploaded."];
+        UIView *confirmationAlert=[viewEnhancer makeAlertFromMessage:@"Congratulations!This module is completed.You can start the next one when that gets uploaded." WithButtonTitle:@"Ok,Thanks."];
         [overlayView insertSubview:confirmationAlert aboveSubview:view];
         [self insertView:confirmationAlert AfterKickingOutViewFromTop:view WithDelay:0.5];
         moduleCompleted=YES;
     }
         
 }
+#pragma mark-ListViewDelegate Methods
+-(void)showAccessoryViewForSubtasksOfTask:(int)serial WithOptionsSelected:(NSMutableArray*)options
+{
+    Task *temp=[module.tasks objectAtIndex:serial];
+    int i=0;
+    NSMutableString *string=[[NSMutableString alloc] init];
+    for(SubTask *st in temp.subtasks)
+    {
+        NSString *msg=[NSString stringWithFormat:@"-%@\n\tSelected:%@",st.name,[options objectAtIndex:i]];
+        [string appendFormat:@"%@\n",msg];
+        i++;
+    }
+    [self showAlertWithTitle:temp.name AndMessage:string];
+    
+}
+
 
 /*
  CALLED WHEN AN ALERT IS DISPLAYED AND NEEDS TO BE CLOSED.
@@ -395,8 +418,8 @@
     viewEnhancer=[[ViewEnhancer alloc] init];
     viewEnhancer.delegate=self;
     //
-    currentView=[[UIView alloc] init];
-    prevView=[[UIView alloc] init];
+    listView.accessoryViewDelegate=self;
+    //
     /*
      INITS POP UP HOLDER
      */
@@ -495,9 +518,20 @@
 - (void)showAlert:(NSString *)msg {
     //CREATE AN ALERT WITH THE MESSAGE AND PASS IT ON TO OVERLAYVIEW.
     [self initAlertOverlay];
-    [overlayView addSubview:[viewEnhancer makeAlertFromMessage:msg]];
+    [overlayView addSubview:[viewEnhancer makeAlertFromMessage:msg WithButtonTitle:@"Ok,Thanks."]];
     [self.view addSubview:overlayView];
 }
+
+-(void)showAlertWithTitle:(NSString*)ttl AndMessage:(NSString*)msg
+{
+    //CREATE AN ALERT WITH THE MESSAGE AND PASS IT ON TO OVERLAYVIEW.
+    [self initAlertOverlay];
+    [overlayView addSubview:[viewEnhancer makeAlertWithTitle:ttl AndMessage:msg WithButtonTitle:@"Ok."]];
+    [self.view addSubview:overlayView];
+
+    
+}
+
 
 /*
  BUTTON TAPPED.HANDLES ACTION FOR WHEN ANY OF THE BUTTON GETS PRESSED BASED ON THEIR TAG.
@@ -521,7 +555,8 @@
     
         //CREATE BUTTON HAS BEEN PRESSED
         NSString *msg=@"This feature is currently under development.\nYou will be notified when an upgrade is available.";
-        [self showAlert:msg];
+        //[self showAlert:msg];
+        [self showAlertWithTitle:@"Unavailable" AndMessage:msg];
         
     }
     else if(tag==START_BUTTON_TAG)

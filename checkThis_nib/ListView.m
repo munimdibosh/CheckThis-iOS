@@ -14,7 +14,7 @@
 @synthesize taskTable;
 @synthesize listName;
 /*
- MANUAL DEFINITION OF THE DELEGATE
+ MANUAL DEFINITION OF THE DELEGATES
  */
 - (id <CallImagePickerDelegate>)delegate
 {
@@ -25,6 +25,16 @@
 {
     delegate = v;
 }
+- (id <ListViewDelegate>)accessoryViewDelegate
+{
+    return accessoryViewDelegate;
+}
+//Declare the setDelegate method
+- (void)setAccessoryViewDelegate:(id <ListViewDelegate>)v
+{
+    accessoryViewDelegate = v;
+}
+
 
 - (id)initWithFrame:(CGRect)frame
 {
@@ -103,19 +113,21 @@
     {
         [cell.imageView setImage:[UIImage imageNamed:@"checkBox_checked.png"]];
 
-        if(![temp hasSubtasks] && ![selectedOption isEqualToString:SUBTASK_IDENTIFIER])
+        if(![temp hasSubtasks])
         {
-            cell.detailTextLabel.text=[NSString stringWithFormat:@"Selected:%@",selectedOption];
+            cell.detailTextLabel.text=[NSString stringWithFormat:@"Selected:%@",[selectedOption objectAtIndex:0]];
         }
         else
         {
-            UIButton *detailsButton=[UIButton buttonWithType:UIButtonTypeCustom];
+            CustomAccessoryButton *detailsButton=[CustomAccessoryButton buttonWithType:UIButtonTypeCustom];
             detailsButton.titleLabel.textColor=[[UIColor alloc] initWithRed:(220/255.0) green:(203/255.0) blue:(154/255.0) alpha:1.0];
             detailsButton.frame=CGRectMake(0, 0,48,48);
             detailsButton.titleLabel.font=[UIFont fontWithName:@"Marker Felt" size:FONT_SIZE_18];
             [detailsButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
             [detailsButton setTitle:@">>" forState:UIControlStateNormal];
-            [detailsButton addTarget:self action: @selector(detailsViewPressed:)forControlEvents:UIControlEventTouchUpInside];
+            [detailsButton addTarget:self action: @selector(detailsViewPressed:) forControlEvents:UIControlEventTouchUpInside];
+            detailsButton.tag=indexPath.row;
+            detailsButton.responses=selectedOption;
             cell.accessoryView=detailsButton;
             cell.detailTextLabel.text=@"Tap arrow to see details.";
 
@@ -138,15 +150,15 @@
 }
 
 //THIS UPDATES THE TABLE VIEW BASED ON USER INTERACTIONS.
--(void)updateCell:(int)n WithStatus:(NSString*)status WithOption:(NSString*)option
+-(void)updateCell:(int)n WithStatus:(NSString*)status WithOption:(NSMutableArray*)options
 {
     NSIndexPath *index=[NSIndexPath indexPathForRow:n inSection:0];
     if([status isEqualToString:TASK_COMPLETED])
     {
         shouldUpdateCell=YES;
-        selectedOption=option;
+        selectedOption=options;
         [self.taskTable reloadRowsAtIndexPaths:[NSArray arrayWithObject:index] withRowAnimation:UITableViewRowAnimationNone];
-        selectedOption=@"";
+        selectedOption=nil;
         shouldUpdateCell=NO;
     }
 }
@@ -174,7 +186,9 @@
 #pragma mark-details view action
 -(IBAction)detailsViewPressed:(id)sender
 {
-    NSLog(@"Details button pressed on cell");
+    CustomAccessoryButton *button=(CustomAccessoryButton*)sender;
+    NSLog(@"Inside detailsViewPressed.");
+    [self.accessoryViewDelegate showAccessoryViewForSubtasksOfTask:button.tag WithOptionsSelected:[NSMutableArray arrayWithArray:button.responses]];
 }
 
 /*

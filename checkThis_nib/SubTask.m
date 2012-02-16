@@ -9,7 +9,7 @@
 #import "SubTask.h"
 
 @implementation SubTask
-@synthesize ID,name,options;
+@synthesize ID,name,options,responses;
 
 - (id)init
 {
@@ -20,5 +20,6 @@
     
     return self;
 }
+
 
 @end

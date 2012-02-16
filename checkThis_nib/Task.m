@@ -9,7 +9,7 @@
 #import "Task.h"
 
 @implementation Task
-@synthesize ID,name,options,subtasks;
+@synthesize ID,name,options,subtasks,responses;
 
 
 - (id)init

@@ -52,7 +52,7 @@
 /*
  CREATES A CUSTOM PAPER FEEL ALERT VIEW.
  */
--(UIView*)makeAlertFromMessage:(NSString*) msg{
+-(UIView*)makeAlertFromMessage:(NSString*) msg WithButtonTitle:(NSString *)ttl{
 
     float width=screenSize.size.width;
     float height=screenSize.size.height;
@@ -61,7 +61,7 @@
     /*
     DYNAMICALLY RESIZING THE LABEL BASED ON STRING SIZE.
     */
-    UIFont *markerFont=[UIFont fontWithName:@"Marker Felt" size:20];
+    UIFont *markerFont=[UIFont fontWithName:@"Marker Felt" size:FONT_SIZE_IN_MENU];
     CGSize sizeOfText=[msg sizeWithFont:markerFont constrainedToSize:CGSizeMake(constraintWidthOfText, MAXFLOAT) lineBreakMode:UILineBreakModeWordWrap];
     UILabel *messageLabel=[[UILabel alloc] initWithFrame:CGRectMake(20,20,constraintWidthOfText,sizeOfText.height)];
     messageLabel.text=msg;
@@ -77,7 +77,7 @@
     okButton.titleLabel.font=[UIFont fontWithName:@"Marker Felt" size:15];
     okButton.frame=CGRectMake(95,labelHeight+distanceBetweenLabelAndButton,90,30);
     [okButton setBackgroundImage:[UIImage imageNamed:@"alert_button_bg.png"] forState:UIControlStateNormal];
-    [okButton setTitle:@"Ok,Thanks!" forState:UIControlStateNormal];
+    [okButton setTitle:ttl forState:UIControlStateNormal];
     [okButton setTag:OVERLAY_BUTTON_TAG];
     [okButton addTarget:self action: @selector(buttonOnAlertGotTapped:)forControlEvents:UIControlEventTouchUpInside];
     //THIS HEIGHT IS ACTUALLY HOW MUCH SPACE IS OCCUPIED BY THE CONTENTS.
@@ -90,7 +90,62 @@
     
 
 }
+/*
+ CREATES A CUSTOM PAPER FEEL ALERT VIEW WITH A TITLE.
+ */
 
+-(UIView*)makeAlertWithTitle:(NSString*) ttl AndMessage:(NSString*)msg WithButtonTitle:(NSString*)ttl2
+{
+    float width=screenSize.size.width;
+    float height=screenSize.size.height;
+    float actualHeight=0.0f;
+    float distanceBetweenLabelAndButton=10.0f;
+    /*
+     DYNAMICALLY RESIZING THE LABEL BASED ON STRING SIZE.
+     */
+    UIFont *markerFont_20=[UIFont fontWithName:@"Marker Felt" size:FONT_SIZE_IN_MENU];
+    UIFont *markerFont_18=[UIFont fontWithName:@"Marker Felt" size:FONT_SIZE_18];
+    CGSize sizeOfText=[msg sizeWithFont:markerFont_18 constrainedToSize:CGSizeMake(constraintWidthOfText, MAXFLOAT) lineBreakMode:UILineBreakModeWordWrap];
+    CGSize sizeOfTitle=[ttl sizeWithFont:markerFont_20 constrainedToSize:CGSizeMake(constraintWidthOfText, MAXFLOAT) lineBreakMode:UILineBreakModeWordWrap];
+    //TITLE
+    UILabel *titleLabel=[[UILabel alloc] initWithFrame:CGRectMake(20,margin,constraintWidthOfText,sizeOfTitle.height)];
+    titleLabel.text=ttl;
+    titleLabel.backgroundColor=[UIColor clearColor];
+    titleLabel.textColor=[UIColor brownColor];
+    titleLabel.numberOfLines=0;//ENABLES MULTILINING.
+    titleLabel.font=markerFont_20;
+    titleLabel.textAlignment=UITextAlignmentCenter;
+    float labelHeight=margin+titleLabel.frame.size.height+distanceBetweenLabelAndButton;
+    //MESSAGE
+    UILabel *messageLabel=[[UILabel alloc] initWithFrame:CGRectMake(20,labelHeight,constraintWidthOfText,sizeOfText.height)];
+    messageLabel.text=msg;
+    messageLabel.backgroundColor=[UIColor clearColor];
+    messageLabel.numberOfLines=0;//ENABLES MULTILINING.
+    messageLabel.font=markerFont_18;
+    messageLabel.textAlignment=UITextAlignmentCenter;
+    //THIS HEIGHT WILL BE USED TO POSITION THE BUTTON.
+    labelHeight+=(messageLabel.frame.size.height+distanceBetweenLabelAndButton);
+    //
+    UIButton *okButton=[UIButton buttonWithType:UIButtonTypeCustom];
+    okButton.titleLabel.textColor=[[UIColor alloc] initWithRed:(220/255.0) green:(203/255.0) blue:(154/255.0) alpha:1.0];
+    okButton.titleLabel.font=[UIFont fontWithName:@"Marker Felt" size:FONT_SIZE_IN_LIST];
+    okButton.frame=CGRectMake(95,labelHeight,90,30);
+    [okButton setBackgroundImage:[UIImage imageNamed:@"alert_button_bg.png"] forState:UIControlStateNormal];
+    [okButton setTitle:ttl2 forState:UIControlStateNormal];
+    [okButton setTag:OVERLAY_BUTTON_TAG];
+    [okButton addTarget:self action: @selector(buttonOnAlertGotTapped:)forControlEvents:UIControlEventTouchUpInside];
+    //THIS HEIGHT IS ACTUALLY HOW MUCH SPACE IS OCCUPIED BY THE CONTENTS.
+    actualHeight=labelHeight+distanceBetweenLabelAndButton+okButton.frame.size.height+margin;
+    UIView *retval=[[UIView alloc] initWithFrame:CGRectMake(( width/2-realWidth/2),(height/2-actualHeight/2),realWidth,actualHeight)];
+    [retval addSubview:titleLabel];
+    [retval addSubview:messageLabel];
+    [retval addSubview:okButton];
+    [self setThePaperLookForView:retval];
+    return retval;
+    
+
+    
+}
 
 -(UIView*)makeTaskViewWithTitle:(NSString *)title ForTask:(Task *)task WithSerial:(int)serial
 {
@@ -275,11 +330,7 @@
 
 }
 
--(void)freeAlertView
-{
-    for(UIView* view in self.subviews)
-        [view removeFromSuperview];
-}
+
 
 /*
  AUTOMATIC CALL BACK WHEN AN ITEM/OPTION ON THE VIEW GET PRESSED.SENT TO DELEGATE IMMIDIATELY.
