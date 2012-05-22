@@ -27,5 +27,23 @@
         return false;
     return true;
 }
+-(void)encodeWithCoder:(NSCoder *)aCoder
+{
+    [aCoder encodeObject:name forKey:@"name"];
+    [aCoder encodeObject:subtasks forKey:@"subtask"];
+    [aCoder encodeObject:responses forKey:@"responses"];
+}
+- (id)initWithCoder:(NSCoder *)coder {
+    self=[super init];
+    if(self)
+    {
+        name = [coder decodeObjectForKey:@"name"];
+        subtasks=[coder decodeObjectForKey:@"subtask"];
+        responses = [coder decodeObjectForKey:@"responses"];
+    }
+    return self;
+
+}
+
 
 @end

@@ -8,20 +8,20 @@
 
 #import <Foundation/Foundation.h>
 
-@interface Task : NSObject
+@interface Task : NSObject<NSCoding>
 {
     NSString* ID;
     NSString *name;
     NSArray *options;
     NSArray *subtasks;
-    NSArray *responses;
+    NSMutableArray *responses;
 
 }
 @property (strong,nonatomic)NSString* ID;
 @property(strong,nonatomic) NSString *name;
 @property(strong,nonatomic) NSArray *options;
 @property(strong,nonatomic) NSArray *subtasks;
-@property(strong,nonatomic) NSArray *responses;
+@property(strong,nonatomic) NSMutableArray *responses;
 
 -(BOOL)hasSubtasks;
 

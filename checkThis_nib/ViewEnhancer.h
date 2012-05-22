@@ -31,8 +31,7 @@
 
 -(void)setThePaperLookForView:(UIView*)view;
 -(UIView*)makeAlertFromMessage:(NSString*) msg WithButtonTitle:(NSString*)ttl;
--(UIView*)makeAlertWithTitle:(NSString*) ttl AndMessage:(NSString*)msg WithButtonTitle:(NSString*)ttl2;
-
+-(UIView*)makeAlertWithTitle:(NSString*) ttl AndMessage:(NSString*)msg WithButtonTitle:(NSString*)ttl2 WithAlignment:(UITextAlignment)align;
 -(UIView*)makeTaskViewWithTitle:(NSString*)title ForTask:(Task*)task WithSerial:(int)serial;
 -(UIView*)makeSubTaskViewWithTitle:(NSString*)title OfTask:(NSString*)taskname WithSerial:(int)serial ForSubTask:(SubTask*)subtask;
 -(IBAction)optionGotTapped:(id)sender;

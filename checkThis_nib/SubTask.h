@@ -7,18 +7,19 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "Constants.h"
 
-@interface SubTask : NSObject
+@interface SubTask : NSObject<NSCoding>
 {
     NSString* ID;
     NSString *name;
     NSArray *options;
-    NSArray *responses;
+    NSMutableArray *responses;
 }
 @property (strong,nonatomic)NSString* ID;
 @property(strong,nonatomic) NSString *name;
 @property(strong,nonatomic) NSArray *options;
-@property(strong,nonatomic) NSArray *responses;
+@property(strong,nonatomic) NSMutableArray *responses;
 
 
 @end

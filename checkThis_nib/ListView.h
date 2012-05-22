@@ -22,8 +22,7 @@
 - (void)captureImage:(id)sender;
 @end
 @protocol ListViewDelegate
--(void)showAccessoryViewForSubtasksOfTask:(int)serial WithOptionsSelected:(NSMutableArray*)options;
-
+-(void)showAccessoryViewForSubtasksOfTask:(int)serial;
 @end
 
 @interface ListView : UIView<UITableViewDelegate,UITableViewDataSource,UIAlertViewDelegate,ViewEnhancerDelegate>
@@ -42,11 +41,8 @@
     //data provider for the app//test purpose
     CheckList *list;
     Module *module;
-    NSArray *tasks;
-    NSArray  *subtasks;
     //The name of the list it will load
     NSString *listName;
-    NSMutableArray *selectedOption;
     //Indicates when to update the specified cell.
     BOOL shouldUpdateCell;
 }
@@ -59,7 +55,11 @@
 @property(strong,nonatomic)NSString *listName;
 
 - (UITableViewCell*)createTableCellForActualList:(UITableView *)tableView indexPath:(NSIndexPath *)indexPath;
--(void)updateCell:(int)n WithStatus:(NSString*)status WithOption:(NSMutableArray*)options;
+-(void)updateCell:(int)n WithStatus:(NSString*)status;
+-(void)updateCellsWithStatus:(NSString*)status;
 -(IBAction)detailsViewPressed:(id)sender;
+-(NSMutableArray*)indexPaths;
+-(NSMutableArray*)subtaskResponsesForTask:(Task*)task;
+
 
 @end

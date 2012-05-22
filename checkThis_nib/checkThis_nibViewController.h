@@ -14,7 +14,6 @@
 #import "DataHolder.h"
 #import "Constants.h"
 #import "TestCase.h"
-
 @interface checkThis_nibViewController : UIViewController<UITableViewDelegate,UITableViewDataSource,UIImagePickerControllerDelegate,UINavigationControllerDelegate, CallImagePickerDelegate,ViewEnhancerDelegate,ListViewDelegate>
 {
     //THIS CLASS IS RESPONSIBLE FOR DIFFERENT TYPES OF UI DESIGNS.
@@ -41,15 +40,18 @@
     NSMutableArray *availableLists;
     int animationType;
     //data provider for the app//test purpose
-    CheckList *list;
     Module *module;
     //THE POP UP QUEUE
     NSMutableArray *popUpQueue;
     //USED TO DETECT WHETHER ALL SUBTASKS GOT COMPLETED.
     int subtaskCounter;
-    //MODULE COMPLETED BOOLEAN
-    BOOL moduleCompleted;
-    
+    //
+    UIButton *playButton;
+    UIButton *forwardButton;
+    UIButton *backwardButton;
+    //OPTIONS VIEW
+    UIView * optionsView;
+        
 }
 @property(strong,nonatomic)ViewEnhancer  *viewEnhancer;
 @property(strong,nonatomic)UIImagePickerController *imgPicker;
@@ -61,12 +63,16 @@
 @property(strong,nonatomic)IBOutlet UIImageView *logoImage;
 @property(strong,nonatomic)IBOutlet UIView *containerView;
 @property(strong,nonatomic)IBOutlet UITableView *TableView;
+@property(strong,nonatomic)UIButton *playButton;
+@property(strong,nonatomic)UIButton *forwardButton;
+@property(strong,nonatomic)UIButton *backwardButton;
+@property(strong,nonatomic)UIView * optionsView;
 @property(strong,nonatomic)ListView *listView;
 @property(strong,nonatomic)NSMutableArray *popUpQueue;
 ////////////Methods//////////////////
 ////////////////////////////////////
 -(void)showAlert:(NSString*)msg;
--(void)showAlertWithTitle:(NSString*)ttl AndMessage:(NSString*)msg;
+-(void)showAlertWithTitle:(NSString*)ttl AndMessage:(NSString*)msg WithAlignment:(UITextAlignment)align;
 -(void)dismissAlert;
 -(void)showImagePicker;
 -(void)initAlertOverlay;
@@ -78,4 +84,10 @@
 -(void)insertView:(UIView*)newView AfterKickingOutViewFromTop:(UIView*)oldView WithDelay:(float)durationInSecond;
 -(void)insertView:(UIView*)newView AfterPullingOutView:(UIView*)oldView WithDelay:(float)durationInSecond;
 -(void)insertView:(UIView*)newView AfterKickingOutView:(UIView*)oldView WithDelay:(float)durationInSecond;
- @end
+-(UIView*)makeOptionsViewWithOptions;
+-(void)setModuleValidity:(Module*)mod To:(BOOL)flag;
+-(void)nextModule;
+-(void)setEnableButtonsInPopUp:(BOOL)flag;
+- (void)popUpOutAnimForView:(UIView*)view;
+- (void)popUpAnimForView:(UIView*)view;
+@end

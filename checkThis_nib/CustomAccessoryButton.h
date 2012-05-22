@@ -11,8 +11,8 @@
 
 @interface CustomAccessoryButton : UIButton
 {
-    NSArray *responses;
+    NSMutableArray *responses;
 }
-@property(strong,nonatomic) NSArray* responses;
+@property(strong,nonatomic) NSMutableArray* responses;
 
 @end

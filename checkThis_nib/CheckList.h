@@ -7,9 +7,9 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "Module.h"
 
-
-@interface CheckList : NSObject
+@interface CheckList : NSObject<NSCoding>
 {
     NSString *ID;
     NSString *name;
@@ -18,5 +18,7 @@
 @property (strong,nonatomic) NSString *ID;
 @property (strong,nonatomic) NSString *name;
 @property (strong,nonatomic) NSArray *modules;
+-(BOOL)isModuleAvailable:(int)modNum;
+-(BOOL)isCompleted;
 
 @end

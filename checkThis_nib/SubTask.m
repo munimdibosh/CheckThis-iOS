@@ -20,6 +20,20 @@
     
     return self;
 }
+-(void)encodeWithCoder:(NSCoder *)aCoder
+{
+    [aCoder encodeObject:name forKey:@"name"];
+    [aCoder encodeObject:responses forKey:@"responses"];
+}
+- (id)initWithCoder:(NSCoder *)coder {
+    self=[super init];
+    if(self)
+    {
+        name = [coder decodeObjectForKey:@"name"];
+        responses = [coder decodeObjectForKey:@"responses"];
+    }
+    return self;
+}
 
 
 @end

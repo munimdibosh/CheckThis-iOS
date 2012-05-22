@@ -7,7 +7,6 @@
 //
 
 #import "CustomAccessoryButton.h"
-
 @implementation CustomAccessoryButton
 @synthesize responses;
 - (id)initWithFrame:(CGRect)frame
@@ -16,8 +15,8 @@
     if (self) {
         // Initialization code
     }
-    return self;
-}
+    responses=[[NSMutableArray alloc] init];
+    return self;}
 
 /*
 // Only override drawRect: if you perform custom drawing.

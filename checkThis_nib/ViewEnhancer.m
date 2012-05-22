@@ -47,7 +47,15 @@
     view.layer.shadowOffset=CGSizeMake(0,4);
 }
 
+-(UIScrollView*)createViewWithScrollOfFrame:(CGRect)rect WithView:(UIView*)view
+{
+    UIScrollView *scrollview = [[UIScrollView alloc] initWithFrame:rect];
+    CGSize scrollableSize = CGSizeMake(scrollview.frame.size.width, view.frame.size.height);
+    [scrollview setContentSize:scrollableSize];
 
+    [scrollview addSubview:view];
+    return scrollview;
+}
 
 /*
  CREATES A CUSTOM PAPER FEEL ALERT VIEW.
@@ -75,14 +83,14 @@
     UIButton *okButton=[UIButton buttonWithType:UIButtonTypeCustom];
     okButton.titleLabel.textColor=[[UIColor alloc] initWithRed:(220/255.0) green:(203/255.0) blue:(154/255.0) alpha:1.0];
     okButton.titleLabel.font=[UIFont fontWithName:@"Marker Felt" size:15];
-    okButton.frame=CGRectMake(95,labelHeight+distanceBetweenLabelAndButton,90,30);
     [okButton setBackgroundImage:[UIImage imageNamed:@"alert_button_bg.png"] forState:UIControlStateNormal];
     [okButton setTitle:ttl forState:UIControlStateNormal];
     [okButton setTag:OVERLAY_BUTTON_TAG];
     [okButton addTarget:self action: @selector(buttonOnAlertGotTapped:)forControlEvents:UIControlEventTouchUpInside];
-    //THIS HEIGHT IS ACTUALLY HOW MUCH SPACE IS OCCUPIED BY THE CONTENTS.
+    UIView *retval;
+    okButton.frame=CGRectMake(95,labelHeight+distanceBetweenLabelAndButton,90,30);
     actualHeight=labelHeight+distanceBetweenLabelAndButton+okButton.frame.size.height+margin;
-    UIView *retval=[[UIView alloc] initWithFrame:CGRectMake(( width/2-realWidth/2),(height/2-actualHeight/2),realWidth,actualHeight)];
+    retval=[[UIView alloc] initWithFrame:CGRectMake(( width/2-realWidth/2),(height/2-actualHeight/2),realWidth,actualHeight)];
     [retval addSubview:messageLabel];
     [retval addSubview:okButton];
     [self setThePaperLookForView:retval];
@@ -94,7 +102,7 @@
  CREATES A CUSTOM PAPER FEEL ALERT VIEW WITH A TITLE.
  */
 
--(UIView*)makeAlertWithTitle:(NSString*) ttl AndMessage:(NSString*)msg WithButtonTitle:(NSString*)ttl2
+-(UIView*)makeAlertWithTitle:(NSString*) ttl AndMessage:(NSString*)msg WithButtonTitle:(NSString*)ttl2 WithAlignment:(UITextAlignment)align
 {
     float width=screenSize.size.width;
     float height=screenSize.size.height;
@@ -108,41 +116,61 @@
     CGSize sizeOfText=[msg sizeWithFont:markerFont_18 constrainedToSize:CGSizeMake(constraintWidthOfText, MAXFLOAT) lineBreakMode:UILineBreakModeWordWrap];
     CGSize sizeOfTitle=[ttl sizeWithFont:markerFont_20 constrainedToSize:CGSizeMake(constraintWidthOfText, MAXFLOAT) lineBreakMode:UILineBreakModeWordWrap];
     //TITLE
-    UILabel *titleLabel=[[UILabel alloc] initWithFrame:CGRectMake(20,margin,constraintWidthOfText,sizeOfTitle.height)];
+    UILabel *titleLabel=[[UILabel alloc] initWithFrame:CGRectMake(margin,margin,constraintWidthOfText,sizeOfTitle.height)];
     titleLabel.text=ttl;
     titleLabel.backgroundColor=[UIColor clearColor];
     titleLabel.textColor=[UIColor brownColor];
     titleLabel.numberOfLines=0;//ENABLES MULTILINING.
     titleLabel.font=markerFont_20;
     titleLabel.textAlignment=UITextAlignmentCenter;
-    float labelHeight=margin+titleLabel.frame.size.height+distanceBetweenLabelAndButton;
     //MESSAGE
-    UILabel *messageLabel=[[UILabel alloc] initWithFrame:CGRectMake(20,labelHeight,constraintWidthOfText,sizeOfText.height)];
+    UILabel *messageLabel=[[UILabel alloc] initWithFrame:CGRectMake(0,0,constraintWidthOfText,sizeOfText.height)];
     messageLabel.text=msg;
     messageLabel.backgroundColor=[UIColor clearColor];
     messageLabel.numberOfLines=0;//ENABLES MULTILINING.
     messageLabel.font=markerFont_18;
-    messageLabel.textAlignment=UITextAlignmentCenter;
-    //THIS HEIGHT WILL BE USED TO POSITION THE BUTTON.
-    labelHeight+=(messageLabel.frame.size.height+distanceBetweenLabelAndButton);
+    messageLabel.textAlignment=align;
+    //THIS HEIGHT WILL BE USED TO POSITION THE BUTTON AN SIZING THE SCROLL VIEW.
+    float labelHeight=messageLabel.frame.size.height;
     //
     UIButton *okButton=[UIButton buttonWithType:UIButtonTypeCustom];
     okButton.titleLabel.textColor=[[UIColor alloc] initWithRed:(220/255.0) green:(203/255.0) blue:(154/255.0) alpha:1.0];
     okButton.titleLabel.font=[UIFont fontWithName:@"Marker Felt" size:FONT_SIZE_IN_LIST];
-    okButton.frame=CGRectMake(95,labelHeight,90,30);
     [okButton setBackgroundImage:[UIImage imageNamed:@"alert_button_bg.png"] forState:UIControlStateNormal];
+    [okButton setUserInteractionEnabled:true];
     [okButton setTitle:ttl2 forState:UIControlStateNormal];
     [okButton setTag:OVERLAY_BUTTON_TAG];
     [okButton addTarget:self action: @selector(buttonOnAlertGotTapped:)forControlEvents:UIControlEventTouchUpInside];
-    //THIS HEIGHT IS ACTUALLY HOW MUCH SPACE IS OCCUPIED BY THE CONTENTS.
-    actualHeight=labelHeight+distanceBetweenLabelAndButton+okButton.frame.size.height+margin;
-    UIView *retval=[[UIView alloc] initWithFrame:CGRectMake(( width/2-realWidth/2),(height/2-actualHeight/2),realWidth,actualHeight)];
-    [retval addSubview:titleLabel];
-    [retval addSubview:messageLabel];
-    [retval addSubview:okButton];
-    [self setThePaperLookForView:retval];
+    UIView *retval;
+    if(labelHeight<=SCROLLER_HEIGHT_IN_ALERT)
+    {
+        messageLabel.frame=CGRectMake(20,titleLabel.frame.origin.y+titleLabel.frame.size.height+distanceBetweenLabelAndButton,constraintWidthOfText,sizeOfText.height);
+        okButton.frame=CGRectMake(95,messageLabel.frame.origin.y+messageLabel.frame.size.height+distanceBetweenLabelAndButton,90,30);
+        
+        actualHeight=okButton.frame.origin.y+okButton.frame.size.height+margin;
+        retval=[[UIView alloc] initWithFrame:CGRectMake(( width/2-realWidth/2),(height/2-actualHeight/2),realWidth,actualHeight)];
+        [retval addSubview:titleLabel];
+        [retval addSubview:messageLabel];
+        [retval addSubview:okButton];
+        [self setThePaperLookForView:retval];
+    }
+    else
+    {
+
+        UIScrollView *content=[self createViewWithScrollOfFrame:CGRectMake(20,titleLabel.frame.origin.y+titleLabel.frame.size.height+distanceBetweenLabelAndButton, messageLabel.frame.size.width,SCROLLER_HEIGHT_IN_ALERT) WithView:messageLabel];
+        okButton.frame=CGRectMake(95,content.frame.origin.y+content.frame.size.height+distanceBetweenLabelAndButton,90,30);
+
+        actualHeight=okButton.frame.origin.y+okButton.frame.size.height+margin;
+
+        retval=[[UIView alloc] initWithFrame:CGRectMake(( width/2-realWidth/2),(height/2-actualHeight/2),realWidth,actualHeight)];
+        [retval addSubview:titleLabel];
+        [retval addSubview:content];
+        [retval addSubview:okButton];
+        [self setThePaperLookForView:retval];
+        
+        
+    }
     return retval;
-    
 
     
 }
@@ -190,17 +218,18 @@
             checkBox.contentMode=UIViewContentModeCenter;
             float checkBoxWidth=checkBox.frame.size.width;
             float checkBoxHeight=checkBox.frame.size.height;
-            checkBox.frame=CGRectMake(0, 0, checkBoxWidth, checkBoxHeight);
             checkBox.tag=CHECKBOX_TAG;
             //optionLabel
             CGSize optionSize=[option sizeWithFont:markerFont_15 constrainedToSize:CGSizeMake((constraintWidthOfText- checkBoxWidth), MAXFLOAT)  lineBreakMode:UILineBreakModeWordWrap];
             
-            UILabel *optionLabel=[[UILabel alloc]initWithFrame:CGRectMake(checkBoxWidth,0,constraintWidthOfText-checkBoxWidth,optionSize.height)];
+            UILabel *optionLabel=[[UILabel alloc]initWithFrame:CGRectMake(checkBoxWidth,0,constraintWidthOfText-checkBoxWidth,optionSize.height+10)];
             optionLabel.text=option;
             optionLabel.backgroundColor=[UIColor clearColor];
             optionLabel.numberOfLines=0;//ENABLES MULTILINING.
             optionLabel.font=markerFont_15;
             optionLabel.tag=OPTION_LABEL_TAG;
+            //FIX THE HEIGHT FOR CHECKBOX
+            checkBox.frame=CGRectMake(0, 0, checkBoxWidth,optionSize.height+10);
             //WRAP THE OPTION LABEL AND CHECK BOX INSIDE BUTTON TO GET USER TAPS
 
             UIButton *labelContainer=[UIButton buttonWithType:UIButtonTypeCustom];
@@ -292,18 +321,19 @@
             UIImageView *checkBox=[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"checkBox_small.png"]];
             checkBox.contentMode=UIViewContentModeCenter;
             float checkBoxWidth=checkBox.frame.size.width;
-            float checkBoxHeight=checkBox.frame.size.height;
-            checkBox.frame=CGRectMake(0, 0, checkBoxWidth, checkBoxHeight);
             checkBox.tag=CHECKBOX_TAG;
             //optionLabel
             CGSize optionSize=[option sizeWithFont:markerFont_15 constrainedToSize:CGSizeMake((constraintWidthOfText- checkBoxWidth), MAXFLOAT)  lineBreakMode:UILineBreakModeWordWrap];
             
-            UILabel *optionLabel=[[UILabel alloc]initWithFrame:CGRectMake(checkBoxWidth,0,constraintWidthOfText-checkBoxWidth,optionSize.height)];
+            UILabel *optionLabel=[[UILabel alloc]initWithFrame:CGRectMake(checkBoxWidth,0,constraintWidthOfText-checkBoxWidth,optionSize.height+10)];
             optionLabel.text=option;
             optionLabel.backgroundColor=[UIColor clearColor];
             optionLabel.numberOfLines=0;//ENABLES MULTILINING.
             optionLabel.font=markerFont_15;
             optionLabel.tag=OPTION_LABEL_TAG;
+            //SET THE checkBox Height
+            checkBox.frame=CGRectMake(0, 0, checkBoxWidth, optionSize.height+10);
+
             //WRAP THE OPTION LABEL AND CHECK BOX INSIDE BUTTON TO GET USER TAPS
             
             UIButton *labelContainer=[UIButton buttonWithType:UIButtonTypeCustom];
@@ -356,7 +386,7 @@
 }
 -(IBAction)buttonOnAlertGotTapped:(id)sender
 {
-    UIView *actionSender=(UIView*)sender;
+    UIButton *actionSender=(UIButton*)sender;
     //IF THIS TAG IS FOUND THAT MEANS ITS AN ALERT ONLY!
     if(actionSender.tag==OVERLAY_BUTTON_TAG)
     {

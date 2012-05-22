@@ -21,6 +21,7 @@
 @synthesize listView;
 @synthesize TableView;
 @synthesize popUpQueue;
+@synthesize playButton,forwardButton,backwardButton,optionsView;
 
 #pragma mark-TableView methods
 
@@ -80,11 +81,15 @@
     //THE PROCEED BUTTON ON SOME LIST HAS BEEN TAPPED.
     //THE ACTUAL LIST IS ABOUT TO BE SHOWN.
     int row=indexPath.row;
+    if(!startButton.isEnabled)
+    {
+        startButton.enabled=YES;
+    }
 
     if(![[availableLists objectAtIndex:row] isEqualToString:@"Unavailable"])
     {
         DataHolder.listName=[availableLists objectAtIndex:row];
-    
+        DataHolder.list=[TestCase getTestList:DataHolder.listName];
         [self loadActualListView];
     }
     
@@ -115,22 +120,28 @@
 -(void)optionSelected:(NSString *)option ForTask:(int)taskSerial WithSuperView:(UIView *)view
 {
     Task *temp=[module.tasks objectAtIndex:taskSerial];
-    NSMutableArray *array=[[NSMutableArray alloc] init];
     if(![temp hasSubtasks])
     {
-        [array addObject:option];
-        [listView updateCell:taskSerial WithStatus:TASK_COMPLETED WithOption:array];
-        [array removeAllObjects];
+        temp.responses=[NSMutableArray arrayWithObject:option];
+        //
+        [listView updateCell:taskSerial WithStatus:TASK_COMPLETED];
     }
     else
     {
-        [array addObject:option];
+        //[responseArray addObject:option];
+        //
+        SubTask *st=[temp.subtasks objectAtIndex:subtaskCounter];
+        st.responses=[NSMutableArray arrayWithObject:option];
+        //
         subtaskCounter++;
         //IF ALL THE SUBTASKS ARE OK THEN INFORM IT.
         if(subtaskCounter==[temp.subtasks count])
         {
-            [listView updateCell:taskSerial WithStatus:TASK_COMPLETED WithOption:array];
-            [array removeAllObjects];
+            NSLog(@"Subtasks completed");
+            NSLog(@"%d",taskSerial);
+            [listView updateCell:taskSerial WithStatus:TASK_COMPLETED];
+            //SET SUBTASK COUNTER TO 0 AGAIN.
+            subtaskCounter=0;
         }
 
     }
@@ -139,29 +150,38 @@
     {
         if([popUpQueue count]!=0)[popUpQueue removeAllObjects];
         //POP OVER OVERLAY SHOULD BE REMOVED.
-        UIView *confirmationAlert=[viewEnhancer makeAlertFromMessage:@"Congratulations!This module is completed.You can start the next one when that gets uploaded." WithButtonTitle:@"Ok,Thanks."];
+        UIView *confirmationAlert=[viewEnhancer makeAlertFromMessage:@"Congratulations!This module is completed." WithButtonTitle:@"Ok,Thanks."];
         [overlayView insertSubview:confirmationAlert aboveSubview:view];
         [self insertView:confirmationAlert AfterKickingOutViewFromTop:view WithDelay:0.5];
-        moduleCompleted=YES;
+        [self setModuleValidity:module To:YES];
+        if([DataHolder.list isCompleted])
+        {
+            playButton.enabled=NO;
+            [self setEnableButtonsInPopUp:YES];
+        }
+        else
+        {
+            [self nextModule];
+        }
     }
-        
+            
 }
 #pragma mark-ListViewDelegate Methods
--(void)showAccessoryViewForSubtasksOfTask:(int)serial WithOptionsSelected:(NSMutableArray*)options
+-(void)showAccessoryViewForSubtasksOfTask:(int)serial
 {
+    NSLog(@"Task-%d",serial);
     Task *temp=[module.tasks objectAtIndex:serial];
     int i=0;
     NSMutableString *string=[[NSMutableString alloc] init];
     for(SubTask *st in temp.subtasks)
     {
-        NSString *msg=[NSString stringWithFormat:@"-%@\n\tSelected:%@",st.name,[options objectAtIndex:i]];
+        NSString *msg=[NSString stringWithFormat:@"-%@\n\tSelected:\n%@",st.name,[st.responses objectAtIndex:0]];
         [string appendFormat:@"%@\n",msg];
         i++;
     }
-    [self showAlertWithTitle:temp.name AndMessage:string];
+    [self showAlertWithTitle:temp.name AndMessage:string WithAlignment:UITextAlignmentLeft];
     
 }
-
 
 /*
  CALLED WHEN AN ALERT IS DISPLAYED AND NEEDS TO BE CLOSED.
@@ -177,7 +197,6 @@
         
     }
 }
-
 /*
  THIS ACTION OPENS UP AN IMAGE PICKER.THIS IS CALLED FROM ONE OF SUBVIEWS VIA DELEGATE.CHECKS IF CAMERA IS AVAILABLE.
  */
@@ -210,6 +229,95 @@
     self.imgPicker.wantsFullScreenLayout = YES;
     [self presentModalViewController:self.imgPicker animated:YES];
 }
+-(BOOL)isNextValid
+{
+    int temp=DataHolder.moduleNumber+1;
+    if([DataHolder.list isModuleAvailable:temp])
+        return YES;
+    else
+        return NO;
+}
+-(BOOL)isBackValid
+{
+    int temp=DataHolder.moduleNumber-1;
+    if(temp<0)
+        return NO;
+    else
+        return YES;
+}
+/*
+ LOADS NEXT MODULE
+ */
+- (void)nextModule {
+    int temp=DataHolder.moduleNumber+1;
+    if([DataHolder.list isModuleAvailable:temp])
+    {
+        DataHolder.moduleNumber=temp;
+        module=[DataHolder.list.modules objectAtIndex:DataHolder.moduleNumber];
+        [listView updateCellsWithStatus:TASK_COMPLETED];
+    }
+}
+-(void)backModule
+{   
+    int temp=DataHolder.moduleNumber-1;
+
+    if(temp>=0)
+    {
+        DataHolder.moduleNumber=temp;
+        module=[DataHolder.list.modules objectAtIndex:DataHolder.moduleNumber];
+        [listView updateCellsWithStatus:TASK_COMPLETED];
+    }
+
+}
+/*
+ POP UP ANIMATION
+ */
+
+- (void)popUpAnimForView:(UIView*)view {
+    view.transform = CGAffineTransformScale(CGAffineTransformIdentity, 0.001, 0.001);
+    
+    [self.view addSubview:view];
+    
+    [UIView animateWithDuration:0.3/2.5 animations:^{
+        view.transform = CGAffineTransformScale(CGAffineTransformIdentity, 1.1,1.1);
+    } completion:^(BOOL finished) {
+        [UIView animateWithDuration:0.3/3 animations:^{
+            view.transform = CGAffineTransformScale(CGAffineTransformIdentity, 0.9, 0.9);
+        } completion:^(BOOL finished) {
+            [UIView animateWithDuration:0.3/3 animations:^{
+                view.transform = CGAffineTransformIdentity;                            
+            }];
+        }];
+    }];
+    
+}
+
+- (void)popUpOutAnimForView:(UIView*)view {
+    view.transform = CGAffineTransformScale(CGAffineTransformIdentity, 0.9, 0.9);
+    
+    
+    
+    [UIView animateWithDuration:0.2/4 animations:
+     ^{
+        view.transform = CGAffineTransformScale(CGAffineTransformIdentity,0.7,0.7);
+    } completion:^(BOOL finished) 
+    {
+        [UIView animateWithDuration:0.2/4.5 animations:
+         ^{
+            view.transform = CGAffineTransformScale(CGAffineTransformIdentity, 0.3,0.3);
+        } completion:^(BOOL finished) 
+        {
+            [UIView animateWithDuration:0.2/4.5 animations:
+             ^{
+                view.transform = CGAffineTransformIdentity; 
+                [optionsView removeFromSuperview];
+
+            }];
+        }];
+    }];
+    //[optionsView removeFromSuperview];
+    
+}
 
 
 
@@ -218,14 +326,14 @@
  
  */
 
-- (void)fadeOutLogo:(float)durationInSecond {
+- (void)fadeOutView:(UIView*)view In:(float)durationInSecond {
     
     [UIView beginAnimations:nil context:NULL];
     [UIView setAnimationDuration:durationInSecond];
     [UIView setAnimationDelegate:self];
     [UIView setAnimationDidStopSelector:@selector(animationDidStop:finished:context:)];
     
-    logoImage.alpha = 0.0f;
+    view.alpha = 0.0f;
     
     [UIView commitAnimations];
 }
@@ -312,7 +420,7 @@
 - (void)initPopUpQueue {
     int I=0;
     Task *task;
-    Module *tempModule=[list.modules objectAtIndex:0];
+    Module *tempModule=[DataHolder.list.modules objectAtIndex:DataHolder.moduleNumber];
     NSArray *tasks=tempModule.tasks;
     
     while(I<[tasks count])
@@ -336,7 +444,6 @@
         }
         I++;
     }
-    NSLog(@"Popup queue initialized:%d",[popUpQueue count]);
 }
 /*
  SEQUENTIALLY SHOWS THE POP OVERS.
@@ -353,17 +460,12 @@
         
         
         int count=[popUpQueue count];
-        NSLog(@"Before showing the alert and increment:%d",index);
-        
         index++;
-        
-        NSLog(@"After increment:%d",index);
         
         if (index<count ) 
         {
             [overlayView insertSubview:[popUpQueue objectAtIndex:index] aboveSubview:sourceView];
             [self insertView:[popUpQueue objectAtIndex:index] AfterKickingOutViewFromTop:sourceView WithDelay:1.0];
-            NSLog(@"After showing the pop up:%d",index);
         }
         if(index==count)
         {
@@ -376,21 +478,32 @@
 
 -(int)startInteraction
 {
-    if(!moduleCompleted)
+    module=[DataHolder.list.modules objectAtIndex:DataHolder.moduleNumber];
+    if(!module.isCompleted)
     {
         [self initPopUpQueue];
         [self initAlertOverlay];
         [self.view addSubview:overlayView];
         [self showSequencedPopoverFrom:nil];
     }
-    else
-        [self showAlert:@"This module is already completed."];
-    
     return LIST_COMPLETED_SUCCESSFULLY;
 }
 
 
+-(void)setUpListObject
+{
+    
+    //GET THE LIST.
+    DataHolder.list=[TestCase getTestList:@"Surgical"];
+    //
+    module=[DataHolder.list.modules objectAtIndex:DataHolder.moduleNumber];
 
+    
+}
+-(void)setModuleValidity:(Module*)mod To:(BOOL)flag
+{
+    module.moduleCompleted=flag;    
+}
 
 
 
@@ -428,8 +541,11 @@
     }
     //SET THE PAPER LOOK
 
-    [viewEnhancer setThePaperLookForView:self.containerView]; 
-    
+    [viewEnhancer setThePaperLookForView:self.containerView];
+    //OPTIONS VIEW
+    optionsView=[self makeOptionsViewWithOptions];
+    CGRect screenSize=[[UIScreen mainScreen] bounds];
+    optionsView.frame=CGRectMake(screenSize.size.width-167-10,startButton.frame.origin.y+startButton.frame.size.height, 167, 89);
     //CREATING THE STATIC ARRAY OF AVAILABLE LISTS.
     
     @try {
@@ -439,17 +555,20 @@
     @catch (NSException *exception) {
         NSLog(@"Error in view did load method");
     }
-    //GET THE LIST.
-    list=[TestCase getTestList:@"Surgical"];
-    module=[list.modules objectAtIndex:0];
+    
+    //<IF ERROR COME BACK HERE>
+    [self setUpListObject];
     //INIT THE subtaskcounter
     subtaskCounter=0;
     //
-    moduleCompleted=NO;
+    [self setModuleValidity:module To:NO];
 }
 
 //THIS METHOD MAKES THE ACTUAL LIST VIEW FROM NIB AND SAVES THAT IN LISTVIEW OBJECT.
-- (void)createListView {
+- (void)createListViewForModule:(int)mod{
+    //SET THE MODULE NUMBER TO LOAD.
+    DataHolder.moduleNumber=mod;
+    //
     ListView *newView = [[ListView alloc] initWithFrame:CGRectMake(containerView.frame.origin.x+340,containerView.frame.origin.y,containerView.frame.size.width,containerView.frame.size.height)];
     [viewEnhancer setThePaperLookForView:newView];
     //SETTING THE WIDTH AND HEIGHT FOR LISTVIEW.
@@ -461,6 +580,7 @@
     self.listView = newView;
     //SETTING THE DELEGATE FOR LISTVIEW.
     listView.delegate=self;
+    listView.accessoryViewDelegate=self;
 
     
 
@@ -478,7 +598,7 @@
     
     //CREATE THE LIST VIEW WITH PROPER LIST
     
-    [self createListView];
+    [self createListViewForModule:0];
     //
     animationType=2;
     [self insertView:listView AfterKickingOutView:containerView WithDelay:0.3];
@@ -497,7 +617,12 @@
     overlayView.backgroundColor=[[UIColor alloc] initWithRed:(255.0/255.0) green:(255.0/255.0) blue:(255.0/255.0) alpha:0.35];
     
 }
-
+//THIS METHOD SETS THE ENABILITY OF FORWARD AND BACKWARD BUTTONS
+-(void)setEnableButtonsInPopUp:(BOOL)flag
+{
+        forwardButton.enabled=flag;
+        backwardButton.enabled=flag;
+}
 
 //CALL THIS METHOD DURING DISMISSING AN ALERT
 
@@ -522,15 +647,72 @@
     [self.view addSubview:overlayView];
 }
 
--(void)showAlertWithTitle:(NSString*)ttl AndMessage:(NSString*)msg
+-(void)showAlertWithTitle:(NSString*)ttl AndMessage:(NSString*)msg WithAlignment:(UITextAlignment)align
 {
     //CREATE AN ALERT WITH THE MESSAGE AND PASS IT ON TO OVERLAYVIEW.
     [self initAlertOverlay];
-    [overlayView addSubview:[viewEnhancer makeAlertWithTitle:ttl AndMessage:msg WithButtonTitle:@"Ok."]];
+    [overlayView addSubview:[viewEnhancer makeAlertWithTitle:ttl AndMessage:msg WithButtonTitle:@"Ok." WithAlignment:align]];
     [self.view addSubview:overlayView];
 
     
 }
+-(UIView*)makeOptionsViewWithOptions 
+{
+    UIImageView *iView=[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"popUp.png"]];
+    iView.backgroundColor=[UIColor clearColor];
+    iView.userInteractionEnabled=YES;
+    //
+    CGSize size=iView.frame.size;
+    float bottomMargin=50.0f;
+    float hMargin=6.0f;
+    float buttonHeight=32.0f;
+    float buttonWidth=48.0f;
+    float hDistance=0.0f;
+    //
+    playButton=[UIButton buttonWithType:UIButtonTypeCustom];
+    [playButton setUserInteractionEnabled:YES];
+    forwardButton=[UIButton buttonWithType:UIButtonTypeCustom];
+    [forwardButton setUserInteractionEnabled:YES];
+    backwardButton=[UIButton buttonWithType:UIButtonTypeCustom];
+    [backwardButton setUserInteractionEnabled:YES];
+    UILabel *separator=[[UILabel alloc] init];
+    separator.backgroundColor=[UIColor grayColor];
+    //
+    [playButton setBackgroundImage:[UIImage imageNamed:@"play.png"] forState:UIControlStateNormal];
+    [playButton setTag:PLAY_BUTTON_TAG];
+    [forwardButton setBackgroundImage:[UIImage imageNamed:@"forward.png"] forState:UIControlStateNormal];
+    [forwardButton setTag:FORWARD_BUTTON_TAG];
+    [backwardButton setBackgroundImage:[UIImage imageNamed:@"backward.png"] forState:UIControlStateNormal];
+    [backwardButton setTag:BACKWARD_BUTTON_TAG];
+    //
+    hDistance+=hMargin;
+    playButton.frame=CGRectMake(hDistance,size.height-bottomMargin,buttonWidth,buttonHeight);
+    hDistance+=(buttonWidth+hMargin);
+    //
+    separator.frame=CGRectMake(hDistance-hMargin/2,size.height-bottomMargin,1, 32);
+    //
+    backwardButton.frame=CGRectMake(hDistance,size.height-bottomMargin,buttonWidth,buttonHeight);
+    hDistance+=(buttonWidth+hMargin);
+    forwardButton.frame=CGRectMake(hDistance,size.height-bottomMargin,buttonWidth,buttonHeight);
+    //
+    [playButton addTarget:self action: @selector(buttonTapped:)forControlEvents:UIControlEventTouchUpInside];
+    [forwardButton addTarget:self action: @selector(buttonTapped:)forControlEvents:UIControlEventTouchUpInside];
+    [backwardButton addTarget:self action: @selector(buttonTapped:)forControlEvents:UIControlEventTouchUpInside];
+    //KEEP FORWARD AND BACKWARD INACTIVE
+    backwardButton.enabled=NO;
+    forwardButton.enabled=NO;
+    
+    [iView addSubview:playButton];
+    [iView addSubview:separator];
+    [iView addSubview:backwardButton];
+    [iView addSubview:forwardButton];
+    UIView *view=[[UIView alloc] initWithFrame:iView.frame];
+    view.backgroundColor=[UIColor clearColor];
+    [view addSubview:iView];
+    return view;
+    
+}
+
 
 
 /*
@@ -547,34 +729,72 @@
         listView=nil;
         if(homeButton.enabled==YES)homeButton.enabled=NO;
         if(startButton.hidden==NO)startButton.hidden=YES;
-        if(moduleCompleted)moduleCompleted=NO;
+        if(!playButton.enabled)playButton.enabled=YES;
+        [self setEnableButtonsInPopUp:NO];
+        if(module.isCompleted)[self setModuleValidity:module To:NO];
+        DataHolder.list=nil;
+        if(![optionsView isHidden])
+        {
+            [optionsView removeFromSuperview];
+        }
         
     }
     else if(tag==CREATE_BUTTON_TAG)
     {
-    
+        
         //CREATE BUTTON HAS BEEN PRESSED
         NSString *msg=@"This feature is currently under development.\nYou will be notified when an upgrade is available.";
         //[self showAlert:msg];
-        [self showAlertWithTitle:@"Unavailable" AndMessage:msg];
-        
+        [self showAlertWithTitle:@"Unavailable" AndMessage:msg WithAlignment:UITextAlignmentCenter];
     }
     else if(tag==START_BUTTON_TAG)
     {
-        //THE PLAY BUTTON GOT PRESSED.
-        @try {
-            [self startInteraction];
+        startButton.enabled=NO;
+        if(![playButton isEnabled])
+        {
+            if(![self isNextValid])forwardButton.enabled=NO;
+            else
+                forwardButton.enabled=YES;
+            if(![self isBackValid])backwardButton.enabled=NO;
+            else
+                backwardButton.enabled=YES;
         }
-        @catch (NSException *exception) {
-            NSLog(@"exception: %@",exception);
-        }
+        
+        [self popUpAnimForView:optionsView];
+
+        //[self popUpAnimForView:optionsView];
     }
     else if(tag==HELP_BUTTON_TAG)
     {
         
-        NSString *msg=@"This is pretty simple at this moment.Just tap a list,when you see the list,tap 'play button' to start completing the tasks in the list.";
-        [self showAlert:msg];
+        NSString *msg=@"Simple to use.Just tap a list,when you see the list,tap 'tick' marked button,select the 'play' button there.Once a list is completed you can see your responses by the arrow keys.";
+        [self showAlertWithTitle:@"Help" AndMessage:msg WithAlignment:UITextAlignmentCenter];
 
+    }
+    else if(tag==PLAY_BUTTON_TAG || tag==FORWARD_BUTTON_TAG || tag==BACKWARD_BUTTON_TAG)
+    {
+        [self popUpOutAnimForView:optionsView];
+        if(![startButton isEnabled] )startButton.enabled=YES;
+        if(tag==PLAY_BUTTON_TAG)
+        {
+            @try {
+                [self startInteraction];
+            }
+            @catch (NSException *exception) {
+                NSLog(@"exception: %@",exception);
+            }
+         
+        }
+        if(tag==FORWARD_BUTTON_TAG)
+        {
+            [self nextModule];
+        }
+        if(tag==BACKWARD_BUTTON_TAG)
+        {
+            [self backModule];
+        }
+
+        //[optionsView removeFromSuperview];
     }
 }
 
@@ -604,7 +824,7 @@
     //fades the logo out
     animationType=1;
     
-    [self fadeOutLogo:5.0]; 
+    [self fadeOutView:logoImage In:4.0]; 
 }
 
 
