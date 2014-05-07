@@ -30,6 +30,7 @@
 -(NSMutableArray *)getChecklists:(NSData*)webResponse{ 
     
     NSMutableArray *checklists = [parser objectWithData:webResponse];
+    NSMutableArray *cases=[parser objectWithString:@"cases"];
     NSMutableArray * checklistsArray = [[NSMutableArray alloc] init];
     for(id checklist in checklists){
         NSLog(@"Checklist: %@",checklist);
